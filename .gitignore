@@ -1,1 +1,9 @@
-.idea
+.idea/
+venv/
+__pycache__/
+node_modules/
+webpack-stats.json
+static/dist/
+.DS_Store
+
+app/settings/*
