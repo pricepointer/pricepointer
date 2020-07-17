@@ -8,10 +8,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const WebpackExtensionManifestPlugin = require('webpack-extension-manifest-plugin')
-const pkg = require('../package.json')
-const ExtensionReloader  = require('webpack-extension-reloader');
-const baseManifest = require('./src/baseManifest.js')
+const CreateManifestPlugin = require('./build/CreateManifestPlugin')
+const buildManifest = require('./src/build-manifest')
 
 // Path to output directory relative to project root
 const OUTPUT_DIR = '_dist/'
@@ -19,7 +17,7 @@ const ENTRY_DIR_PATH = 'src/entries'
 
 // The development server to use when in development/debug/hot-reload mode, for use
 // with webpack-dev-server
-const DEVELOPMENT_SERVER = 'http://localhost:3000'
+// const DEVELOPMENT_SERVER = 'http://localhost:3000'
 const isProduction = process.env.NODE_ENV === 'production'
 
 const getProjectAbsolutePath = (p) => path.join(path.resolve(__dirname), p)
@@ -40,18 +38,19 @@ function buildEntries(isDevServer) {
                 plugins.push(
                     new HtmlWebpackPlugin({
                         template: templatePath,
+                        filename: `${name}.html`,
                         chunks: [name],
                     }),
                 )
             }
 
-            if (!isProduction && isDevServer) {
-                entry[name].unshift(
-                    `webpack-dev-server/client?${DEVELOPMENT_SERVER}`,
-                    'webpack/hot/only-dev-server',
-                    // 'react-hot-loader/patch',
-                )
-            }
+            // if (!isProduction && isDevServer) {
+            //     entry[name].unshift(
+            //         `webpack-dev-server/client?${DEVELOPMENT_SERVER}`,
+            //         'webpack/hot/only-dev-server',
+            //         // 'react-hot-loader/patch',
+            //     )
+            // }
         })
 
     return {
@@ -79,33 +78,25 @@ function buildWebpackConfig() {
         new webpack.DefinePlugin({
             'process.env': environment,
         }),
-        new BundleTracker({ filename: './webpack-stats.json' }),
         new MiniCssExtractPlugin({
             filename: '[name].[hash].css',
             chunkFilename: '[id].[hash].css',
         }),
-        new WebpackExtensionManifestPlugin({
-            config: {
-                base: baseManifest,
-                extend: { version: pkg.version },
-            },
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: getProjectAbsolutePath('images'), to: 'images' },
+            ]
         }),
+        new CreateManifestPlugin(buildManifest),
         new WriteFilePlugin(),
-        new ExtensionReloader({
-            port: 9090, // Which port use to create the server
-            reloadPage: true, // Force the reload of the page also
-            entries: { // The entries used for the content/background scripts or extension pages
-                contentScript: 'content-script',
-                background: 'background',
-                extensionPage: 'popup',
-            }),
     ]
 
     if (!isProduction) {
+        plugins.push(new BundleTracker({ filename: './webpack-stats.json' }))
         plugins.push(new webpack.SourceMapDevToolPlugin({
             // asset matching
             filename: '[file].map',
-            exclude: [/vendor\.(.*)\.js/, /node_modules/],
+            exclude: [/node_modules/],
 
             // quality/performance
             module: true,
@@ -249,29 +240,20 @@ function buildWebpackConfig() {
         )
 
         if (isDevServer) {
-            plugins.push(new webpack.HotModuleReplacementPlugin())
+            // plugins.push(new webpack.HotModuleReplacementPlugin())
 
-            babelLoader.options.plugins.push('react-hot-loader/babel')
+            // babelLoader.options.plugins.push('react-hot-loader/babel')
 
             devServer = {
                 hot: true,
                 overlay: true,
             }
 
-            alias = {
-                'react-dom': '@hot-loader/react-dom',
-            }
+            // alias = {
+            //     'react-dom': '@hot-loader/react-dom',
+            // }
         }
     }
-
-    rules.push({
-        test: /\.worker\.js$/,
-        exclude: [/node_modules/],
-        use: [
-            babelLoader,
-            'worker-loader',
-        ],
-    })
 
     rules.push({
         test: /\.js$/,
@@ -284,45 +266,13 @@ function buildWebpackConfig() {
     return {
         mode: isProduction ? 'production' : 'development',
         cache: true,
-        entry,
+        entry: {
+            ...entry,
+            reloader: path.resolve(path.join(__dirname, 'build/reloader.raw.js')),
+        },
         plugins,
         optimization: {
             minimize: isProduction,
-            removeAvailableModules: false,
-            removeEmptyChunks: false,
-            runtimeChunk: { name: 'manifest' },
-            splitChunks: {
-                cacheGroups: {
-                    ink: {
-                        test(module) {
-                            if (module && module.context) {
-                                return (
-                                    module.context.includes('node_modules') &&
-                                    module.context.includes('ink')
-                                )
-                            }
-                            return false
-                        },
-                        name: 'ink',
-                        enforce: true,
-                        chunks: 'all',
-                    },
-                    vendor: {
-                        test(module) {
-                            if (module && module.context) {
-                                return (
-                                    module.context.includes('node_modules') &&
-                                    !module.context.includes('ink')
-                                )
-                            }
-                            return false
-                        },
-                        name: 'vendor',
-                        enforce: true,
-                        chunks: 'all',
-                    },
-                },
-            },
         },
         devtool: false,
         module: {
@@ -333,7 +283,7 @@ function buildWebpackConfig() {
             modules: [
                 'node_modules',
             ],
-            alias,
+            // alias,
         },
         devServer,
     }
