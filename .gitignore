@@ -7,3 +7,5 @@ static/dist/
 .DS_Store
 
 app/settings/*
+
+*/_dist

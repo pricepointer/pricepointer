@@ -1,0 +1,110 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "parser": "babel-eslint",
+    "plugins": [
+        "react",
+        "import",
+        "eslint-plugin-import-order-alphabetical"
+    ],
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "extends": [
+        "airbnb"
+    ],
+    "rules": {
+        "semi": [ "error", "never" ],
+        "prefer-destructuring": [ "error", { "object": true, "array": false } ],
+        "comma-dangle": [ "error", "always-multiline" ],
+
+        "max-len": [ "error", 120, 2 ],
+        "no-nested-ternary": 0, // It's nice for JSX.
+        "no-param-reassign": 0, // We love param reassignment. Naming is hard.
+        "no-shadow": 0, // Shadowing is a nice language feature. Naming is hard.
+
+        "space-before-function-paren": [
+            "error",
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
+        "no-empty": [ 2, { "allowEmptyCatch": true } ],
+        "no-spaced-func": 2,
+        "array-bracket-spacing": [ 2, "never" ],
+        "space-in-parens": [ 2, "never" ],
+        "quote-props": [ 2, "as-needed" ],
+        "key-spacing": [ 2, { "beforeColon": false, "afterColon": true } ],
+        "space-unary-ops": [ 2, { "words": false, "nonwords": false } ],
+        "no-mixed-spaces-and-tabs": 2,
+        "no-trailing-spaces": 2,
+        "comma-style": [ 2, "last" ],
+        "space-infix-ops": 2,
+        "camelcase": [ 2, { "properties": "never" } ],
+        "curly": [ 2, "multi-line" ],
+        "lines-around-comment": [
+            2,
+            {
+                "beforeLineComment": true,
+                "allowBlockStart": true,
+                "allowClassStart": true,
+                "allowObjectStart": true,
+                "allowArrayStart": true
+            }
+        ],
+        "linebreak-style": [ 2, "unix" ],
+        "quotes": [
+            2, "single",
+            { "allowTemplateLiterals": true, "avoidEscape": true }
+        ],
+        "indent": [
+            2,
+            4,
+            { "SwitchCase": 1, "MemberExpression": "off" }
+        ],
+        "no-bitwise": 0,
+
+        // Imports
+        "global-require": 0,
+        "import/no-dynamic-require": 0,
+        "import/prefer-default-export": 0,
+        "import-order-alphabetical/order": [
+            "error",
+            {
+                "groups": [
+                    "builtin",
+                    "external",
+                    "internal",
+                    [
+                        "sibling",
+                        "parent",
+                        "index"
+                    ]
+                ]
+            }
+        ],
+
+        // React
+        "react/jsx-curly-brace-presence": [
+            2,
+            { "props": "never", "children": "never" }
+        ],
+        "react/jsx-closing-bracket-location": [ "error", "line-aligned" ],
+        "react/jsx-indent": [ 2, 4 ],
+        "react/jsx-indent-props": [ 2, 4 ],
+        "react/jsx-filename-extension": 0,
+
+        // jsx
+
+        "jsx-a11y/click-events-have-key-events": 0,
+        "jsx-a11y/mouse-events-have-key-events": 0,
+        "jsx-a11y/no-noninteractive-element-interactions": 0
+    }
+}
