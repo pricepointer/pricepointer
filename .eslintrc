@@ -18,6 +18,9 @@
     "extends": [
         "airbnb"
     ],
+    "globals": {
+        "chrome": "readonly"
+    },
     "rules": {
         "semi": [ "error", "never" ],
         "prefer-destructuring": [ "error", { "object": true, "array": false } ],

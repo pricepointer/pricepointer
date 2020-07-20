@@ -1,7 +1,7 @@
 const pkg = require('../../package.json')
 
 const baseManifest = {
-    name: "Drop Shop",
+    name: 'Drop Shop',
     description: pkg.description,
     permissions: ['activeTab', 'declarativeContent', 'storage'],
     version: pkg.version,
