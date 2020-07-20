@@ -14,10 +14,6 @@ const buildManifest = require('./src/build-manifest')
 // Path to output directory relative to project root
 const OUTPUT_DIR = '_dist/'
 const ENTRY_DIR_PATH = 'src/entries'
-
-// The development server to use when in development/debug/hot-reload mode, for use
-// with webpack-dev-server
-// const DEVELOPMENT_SERVER = 'http://localhost:3000'
 const isProduction = process.env.NODE_ENV === 'production'
 
 const getProjectAbsolutePath = (p) => path.join(path.resolve(__dirname), p)
