@@ -78,6 +78,10 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-jss": "^10.3.0",
     "webextension-polyfill": "^0.6.0"
   }
 }

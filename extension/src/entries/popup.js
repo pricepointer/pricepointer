@@ -1,16 +1,10 @@
-const changeColor = document.getElementById('changeColor')
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Popup from '../components/Popup/Popup'
 
-chrome.storage.sync.get('color', (data) => {
-    changeColor.style.backgroundColor = data.color
-    changeColor.setAttribute('value', data.color)
-})
-
-changeColor.onclick = function (element) {
-    const color = element.target.value
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.executeScript(
-            tabs[0].id,
-            { code: `document.body.style.backgroundColor = "${color}";` },
-        )
-    })
-}
+ReactDOM.render(
+    <React.StrictMode>
+        <Popup />
+    </React.StrictMode>,
+    document.getElementById('app'),
+)

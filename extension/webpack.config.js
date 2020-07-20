@@ -39,14 +39,6 @@ function buildEntries(isDevServer) {
                     }),
                 )
             }
-
-            // if (!isProduction && isDevServer) {
-            //     entry[name].unshift(
-            //         `webpack-dev-server/client?${DEVELOPMENT_SERVER}`,
-            //         'webpack/hot/only-dev-server',
-            //         // 'react-hot-loader/patch',
-            //     )
-            // }
         })
 
     return {
@@ -221,7 +213,6 @@ function buildWebpackConfig() {
         },
     }
 
-    let alias
     let devServer
     if (isProduction) {
         environment.NODE_ENV = JSON.stringify('production')
@@ -236,18 +227,10 @@ function buildWebpackConfig() {
         )
 
         if (isDevServer) {
-            // plugins.push(new webpack.HotModuleReplacementPlugin())
-
-            // babelLoader.options.plugins.push('react-hot-loader/babel')
-
             devServer = {
                 hot: true,
                 overlay: true,
             }
-
-            // alias = {
-            //     'react-dom': '@hot-loader/react-dom',
-            // }
         }
     }
 
@@ -279,7 +262,6 @@ function buildWebpackConfig() {
             modules: [
                 'node_modules',
             ],
-            // alias,
         },
         devServer,
     }
