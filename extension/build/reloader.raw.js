@@ -8,12 +8,11 @@
 /* -------------------------------------------------- */
 (function (window) {
 
-    const injectionContext = { browser: null };
     (function () {
         `<%= polyfillSource %>`
-    }).bind(injectionContext)()
+    }).bind(window)()
 
-    const { browser } = injectionContext
+    const { browser } = window
     const signals = JSON.parse('<%= signals %>')
     const config = JSON.parse('<%= config %>')
 
