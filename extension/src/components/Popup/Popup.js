@@ -3,8 +3,6 @@ import withStyles from 'react-jss'
 
 const styles = {
     button: {
-        height: 30,
-        width: 30,
         outline: 'none',
     },
 }
@@ -14,41 +12,50 @@ class Popup extends PureComponent {
         super(props)
 
         this.state = {
-            color: null,
+            isTracking: false,
         }
+    }
 
-        chrome.storage.sync.get('color', (data) => {
-            this.setState({
-                color: data.color,
-            })
-        })
+    componentDidMount() {
+        // Read from storage or options here
+        // chrome.storage.sync.get('color', (data) => {
+        //     this.setState({
+        //         color: data.color,
+        //     })
+        // })
     }
 
     handleClick = () => {
-        const { color } = this.state
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            chrome.tabs.executeScript(
-                tabs[0].id,
-                { code: `document.body.style.backgroundColor = "${color}";` },
-            )
+        this.setState((prevState) => {
+            const nextState = {
+                isTracking: !prevState.isTracking,
+            }
+
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                chrome.tabs.sendMessage(tabs[0].id, nextState)
+            })
+
+            return nextState
         })
     }
 
     render() {
         const { classes } = this.props
-        const { color } = this.state
-
-        if (!color) return null
+        const { isTracking } = this.state
 
         return (
             <div>
                 <button
                     className={classes.button}
                     type="button"
-                    value={color}
-                    style={{ backgroundColor: color }}
                     onClick={this.handleClick}
-                />
+                >
+                    {
+                        isTracking
+                            ? 'Select price'
+                            : 'Click to select price'
+                    }
+                </button>
             </div>
         )
     }

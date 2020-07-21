@@ -32,6 +32,12 @@ module.exports = (chunks) => {
     }
 
     manifest.options_page = 'options.html'
+    manifest.content_scripts = [
+        {
+            matches: ['http://*/*', 'https://*/*'],
+            js: [chunks.content],
+        },
+    ]
 
     return manifest
 }

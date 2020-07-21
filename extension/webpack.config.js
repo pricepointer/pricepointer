@@ -20,7 +20,10 @@ const getProjectAbsolutePath = (p) => path.join(path.resolve(__dirname), p)
 
 function buildEntries(isDevServer) {
     const entryDirPath = getProjectAbsolutePath(`./${ENTRY_DIR_PATH}`)
-    const entry = {}
+    const entry = {
+        content: path.resolve(`${entryDirPath}/../content/index.js`)
+    }
+
     const plugins = []
     fs.readdirSync(path.resolve(entryDirPath))
         .filter(file => !fs.statSync(path.join(entryDirPath, file))
@@ -83,7 +86,7 @@ function buildWebpackConfig() {
         plugins.push(new BundleTracker({ filename: './webpack-stats.json' }))
         plugins.push(new webpack.SourceMapDevToolPlugin({
             // asset matching
-            filename: '[file].map',
+            filename: null, // inline
             exclude: [/node_modules/],
 
             // quality/performance
