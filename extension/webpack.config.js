@@ -21,7 +21,7 @@ const getProjectAbsolutePath = (p) => path.join(path.resolve(__dirname), p)
 function buildEntries(isDevServer) {
     const entryDirPath = getProjectAbsolutePath(`./${ENTRY_DIR_PATH}`)
     const entry = {
-        content: path.resolve(`${entryDirPath}/../content/index.js`)
+        content: path.resolve(`${entryDirPath}/../content/content.js`)
     }
 
     const plugins = []

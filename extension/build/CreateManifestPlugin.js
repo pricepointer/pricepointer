@@ -34,7 +34,7 @@ module.exports = class CreateManifestPlugin {
         })
 
         const contentOrBgChanged = changedChunks.some(({ name }) => {
-            let contentChanged = false
+            let contentChanged
             const bgChanged = name === background
 
             if (Array.isArray(contentScript)) {
@@ -70,8 +70,8 @@ module.exports = class CreateManifestPlugin {
 
         const entries = {
             background: 'background',
-            contentScript: 'popup',
-            extensionPage: null,
+            contentScript: ['popup', 'content'],
+            extensionPage: '',
         }
         const reloadPage = true
         const port = 9090

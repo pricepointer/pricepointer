@@ -11,37 +11,19 @@ class Popup extends PureComponent {
     constructor(props) {
         super(props)
 
-        this.state = {
-            isTracking: false,
-        }
-    }
-
-    componentDidMount() {
-        // Read from storage or options here
-        // chrome.storage.sync.get('color', (data) => {
-        //     this.setState({
-        //         color: data.color,
-        //     })
-        // })
+        this.state = {}
     }
 
     handleClick = () => {
-        this.setState((prevState) => {
-            const nextState = {
-                isTracking: !prevState.isTracking,
-            }
-
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                chrome.tabs.sendMessage(tabs[0].id, nextState)
-            })
-
-            return nextState
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            chrome.tabs.sendMessage(tabs[0].id, { toggleSelectPrice: true })
         })
+
+        window.close()
     }
 
     render() {
         const { classes } = this.props
-        const { isTracking } = this.state
 
         return (
             <div>
@@ -50,11 +32,7 @@ class Popup extends PureComponent {
                     type="button"
                     onClick={this.handleClick}
                 >
-                    {
-                        isTracking
-                            ? 'Select price'
-                            : 'Click to select price'
-                    }
+                    Select price
                 </button>
             </div>
         )
