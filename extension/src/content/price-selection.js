@@ -1,4 +1,8 @@
+import { createPopper } from '@popperjs/core'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import buildStyles from './buildStyles'
+import Prompt from './components/Prompt'
 
 // state
 let isToggled = false
@@ -71,9 +75,10 @@ function updateOverlay() {
             height: clientRect.height,
             width: clientRect.width,
         }
-        Object.keys(rect).forEach((prop) => {
-            rect[prop] = Math.max(rect[prop], 0)
-        })
+        Object.keys(rect)
+            .forEach((prop) => {
+                rect[prop] = Math.max(rect[prop], 0)
+            })
 
         setElementRect(overlay.top, {
             top: 0,
@@ -116,12 +121,41 @@ function updateHighlightBoundaries() {
     updateOverlay()
 }
 
+function renderPopup(element) {
+    const wrapper = document.createElement('div')
+    document.body.appendChild(wrapper)
+
+    function closePopup() {
+        document.body.removeChild(wrapper)
+    }
+
+    ReactDOM.render(
+        <React.StrictMode>
+            <Prompt
+                target={element}
+                handleClose={closePopup}
+            />
+        </React.StrictMode>,
+        wrapper,
+    )
+
+    createPopper(element, wrapper)
+}
+
 function handlePriceClick(event) {
-    console.log(event.target)
+    // eslint-disable-next-line no-use-before-define
+    leavePriceSelection()
+    const isPrice = event.target.innerText
+    console.log(isPrice)
+    if (isPrice.includes('$') || isPrice.includes('£') || isPrice.includes('€') || isPrice.includes('¥')
+        || isPrice.includes('₾')) {
+        renderPopup(event.target)
+    }
 
     event.preventDefault()
     event.stopPropagation()
 }
+
 
 function handlePriceMouseOver(event) {
     hoveredElement = event.target
@@ -158,10 +192,11 @@ export function enterPriceSelection() {
         left: document.createElement('div'),
     }
 
-    Object.values(overlay).forEach((el) => {
-        el.classList.add(stylesheet.classes.overlay)
-        document.body.appendChild(el)
-    })
+    Object.values(overlay)
+        .forEach((el) => {
+            el.classList.add(stylesheet.classes.overlay)
+            document.body.appendChild(el)
+        })
     updateOverlay()
 
     highlight = document.createElement('div')
@@ -181,9 +216,10 @@ export function leavePriceSelection() {
 
     if (overlay) {
         // remove overlay
-        Object.values(overlay).forEach((el) => {
-            el.parentNode.removeChild(el)
-        })
+        Object.values(overlay)
+            .forEach((el) => {
+                el.parentNode.removeChild(el)
+            })
     }
 
     if (highlight) {

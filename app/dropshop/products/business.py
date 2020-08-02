@@ -1,7 +1,7 @@
 from .models import Price
 
 
-def price_gen(user, price, error, html):
-    price = Price(user=user, error=error, price=price, html=html)
+def create_price(price, error, html, product):
+    price = Price(error=error, price=price, html=html, product=product)
     price.save()
     return price

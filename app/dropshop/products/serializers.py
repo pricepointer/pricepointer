@@ -8,7 +8,7 @@ class ProductSerializer(ModelSerializer):
         model = Product
         fields = (
             'id', 'user', 'website', 'price_path', 'active', 'created_at', 'expires_at',
-            'notification_period', 'target_price'
+            'notification_period', 'target_price', 'name'
         )
 
 
