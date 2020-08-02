@@ -1,0 +1,57 @@
+@import "~normalize.css/normalize";
+@import "breakpoints";
+@import "theme";
+@import "./fonts";
+//@import "elements/button";
+@import "elements/form";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: $white;
+  font-size: $fontSize;
+  font-family: $fontFamily;
+  color: $black;
+}
+
+a {
+  text-decoration: none;
+  color: $blue400;
+
+  &:hover {
+    color: $blue500;
+  }
+}
+
+.hidden-header {
+  overflow: hidden;
+  margin: 0;
+  line-height: 0;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding-right: 36px;
+  padding-left: 36px;
+  max-width: 72rem;
+
+  @include respond-to('mobile-portrait') {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+
+//.logo {
+//  font-family: $headerFontFamily;
+//  font-weight: 900;
+//  font-size: 24px;
+//  color: $primary;
+//
+//  @include respond-to('mobile-portrait') {
+//    font-size: 20px;
+//  }
+//}
+

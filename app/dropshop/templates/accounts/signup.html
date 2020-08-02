@@ -1,0 +1,34 @@
+{% extends "accounts/base/signup.html" %}
+{% load render_bundle from webpack_loader %}
+
+{% block js %}
+    {% render_bundle 'signup' 'js' %}
+{% endblock %}
+
+{% block title %}
+    Sign up
+{% endblock %}
+
+{% block content %}
+    <form>
+        <div class="signup-box-form">
+            <label>Full Name</label>
+            <input type="text"/>
+            <label>Email</label>
+            <input type="text"/>
+            <label>Password</label>
+            <input type="text"/>
+        </div>
+        <div class="signup-box-button">
+            <button type="submit" class="button button-secondary button-shadow button-block" href="#">
+                Sign up
+            </button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block footer %}
+    <div class="link">
+        Already have an account? <a href="/signin">Sign in</a>
+    </div>
+{% endblock %}

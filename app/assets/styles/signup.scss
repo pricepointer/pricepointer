@@ -1,0 +1,17 @@
+@import "./abstracts/variables";
+@import "./abstracts/functions";
+@import "./abstracts/mixins";
+
+@import "theme";
+
+@import "./elements/buttons";
+@import "./elements/form";
+
+@import "./signup/layout/main";
+@import "./signup/layout/box";
+
+
+header {
+  padding-bottom: 24px;
+  text-align: center;
+}

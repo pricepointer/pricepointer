@@ -1,0 +1,86 @@
+@import "../breakpoints";
+@import "../theme";
+
+$buttonTextColor: $white;
+$buttonTextColor__disabled: $grey600;
+$buttonBackground: $primary;
+$buttonHoverColor: #29C380;
+$buttonBorderRadius: 5px;
+
+.button,
+a.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  padding: 8px 24px;
+  font-family: $fontFamily;
+  font-size: $fontSize;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  color: $buttonTextColor;
+  background: $buttonBackground;
+  border: 1px solid $buttonBackground;
+  border-radius: $buttonBorderRadius;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  @include respond-to('mobile-portrait') {
+    padding: 4px 12px;
+    font-size: $mobileFontSize;
+  }
+
+  &:hover, &:focus {
+    background: $buttonHoverColor;
+  }
+
+  &.small {
+    padding: 4px 12px;
+    font-size: $fontSize - 2;
+  }
+
+  &.large {
+    padding: 16px 36px;
+    font-size: $fontSize + 2;
+  }
+
+  &:disabled,
+  &[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &:disabled,
+  &[disabled],
+  &.disabled,
+  &.disabled:hover,
+  &.disabled:active,
+  &.disabled:focus {
+    color: $buttonTextColor__disabled;
+    background: #ffffff;
+    border: solid 2px $buttonTextColor__disabled;
+    pointer-events: none;
+  }
+
+  &.outline {
+    color: $buttonBackground;
+    background: transparent;
+    border: 2px solid $buttonBackground;
+
+    &:hover, &:focus {
+      background: #f2f2f2;
+      color: $buttonHoverColor;
+      border-color: $buttonHoverColor;
+    }
+  }
+
+  &.full-width {
+    display: block;
+    width: 100%;
+  }
+}

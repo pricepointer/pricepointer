@@ -3,9 +3,10 @@ venv/
 __pycache__/
 node_modules/
 webpack-stats.json
-static/dist/
 .DS_Store
 
 app/settings/*
+app/static
+app/dropshop/static/dist
 
 */_dist

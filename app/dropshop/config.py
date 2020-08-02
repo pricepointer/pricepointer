@@ -1,1 +1,1 @@
-site_name = "Dropshop"
+site_name = 'Drop Shop'

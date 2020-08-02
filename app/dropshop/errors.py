@@ -3,6 +3,7 @@ import traceback
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils.deprecation import MiddlewareMixin
 from rest_framework import status as statuses
 from rest_framework.exceptions import APIException
 
@@ -79,3 +80,14 @@ def build_response(
             response[header] = value
 
     return response
+
+
+class HandleExceptionMiddleware(MiddlewareMixin):
+    def process_exception(self, request, exception):
+        if settings.DEBUG:
+            # pass through
+            return None
+        else:
+            # TODO: Send to 404 page
+            pass
+        return None

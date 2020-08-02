@@ -1,0 +1,62 @@
+@import "../theme";
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+textarea,
+select
+{
+  display: block;
+  margin: 0;
+  padding: 10px 15px;
+  width: 100%;
+  font-family: $fontFamily;
+  font-size: $fontSize;
+  color: $black;
+  border: solid 2px $grey400;
+  background: $white;
+  border-radius: 3px;
+  outline: none;
+  appearance: none;
+
+  &:disabled {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  &:focus {
+    border: solid 2px $primary600;
+  }
+
+  &.error {
+    border-color: $red500;
+  }
+}
+
+select {
+  padding: 10px 30px 10px 15px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+  appearance: none;
+  position: relative;
+
+  &::before {
+    content: '\f078';
+    font-family: FontAwesome;
+    position: absolute;
+    right: 8px;
+  }
+}
+
+textarea {
+  display: block;
+  width: 100%;
+}
+
+input[type="checkbox"] {
+  display: inline;
+}
+

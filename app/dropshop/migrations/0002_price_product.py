@@ -17,6 +17,7 @@ class Migration(migrations.Migration):
             name='Product',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=50)),
                 ('website', models.TextField()),
                 ('price_path', models.TextField()),
                 ('active', models.BooleanField(default=True)),
@@ -35,7 +36,7 @@ class Migration(migrations.Migration):
                 ('price', models.DecimalField(decimal_places=2, max_digits=19, null=True)),
                 ('error', models.BooleanField()),
                 ('html', models.TextField()),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='dropshop.Product'))
             ],
         ),
     ]

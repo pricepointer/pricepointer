@@ -1,0 +1,24 @@
+{% load constants %}
+
+<svg width="32"
+     height="32"
+     viewBox="0 0 32 32"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>{% config 'site_name' %}</title>
+    <defs>
+        <path id="logo-a" d="M32 0v32L0 0z"/>
+        <linearGradient x1="60.846%" y1="29.602%" x2="108.203%" y2="100%" id="logo-b">
+            <stop stop-color="#5E52F6" offset="0%"/>
+            <stop stop-color="#6EE4D7" offset="100%"/>
+        </linearGradient>
+        <linearGradient x1="97.467%" y1="83.376%" x2="40.906%" y2="0%" id="logo-c">
+            <stop stop-color="#5E52F6" offset="0%"/>
+            <stop stop-color="#6EE4D7" offset="100%"/>
+        </linearGradient>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <use fill="url(#logo-b)" transform="matrix(-1 0 0 1 32 0)" xlink:href="#logo-a"/>
+        <use fill="url(#logo-c)" xlink:href="#logo-a"/>
+    </g>
+</svg>

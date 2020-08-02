@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "app": "NODE_ENV=development webpack --config app/webpack.config.js --mode=development --watch --progress --colors",
     "extension": "NODE_ENV=development webpack --config extension/webpack.config.js --mode=development --watch --progress --colors",
     "extension-build": "NODE_ENV=production webpack --config extension/webpack.config.js --mode=production --progress --colors -p",
     "lint": "lint-staged",
@@ -47,7 +48,7 @@
     "eslint-config-react-app": "^5.2.1",
     "eslint-loader": "3.0.3",
     "eslint-plugin-flowtype": "4.6.0",
-    "eslint-plugin-import": "2.20.1",
+    "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-import-order-alphabetical": "0.0.2",
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-react": "7.19.0",
@@ -69,7 +70,7 @@
     "url-loader": "2.3.0",
     "useragent": "^2.3.0",
     "webpack": "^4.43.0",
-    "webpack-bundle-tracker": "^1.0.0-alpha.1",
+    "webpack-bundle-tracker": "^0.4.3",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "webpack-sources": "^1.4.3",
@@ -79,11 +80,14 @@
   "dependencies": {
     "@popperjs/core": "^2.4.4",
     "core-js": "^3.6.5",
+    "font-awesome": "^4.7.0",
+    "normalize.css": "^8.0.1",
     "jss": "^10.3.0",
     "jss-preset-default": "^10.3.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-hot-loader": "^4.8.3",
     "react-jss": "^10.3.0",
     "webextension-polyfill": "^0.6.0"
   }

@@ -1,0 +1,44 @@
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load constants %}
+{% load macros %}
+
+{% macro title %}
+    {% block title %}{% endblock %}
+{% endmacro %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% usemacro title %} - {% config 'site_name' %}</title>
+
+    {% render_bundle 'main' 'css' %}
+    {% block css %}{% endblock %}
+</head>
+<body>
+<div class="container">
+    <div class="inner">
+        <header>
+            <h1 class="hidden-header">{% usemacro title %}</h1>
+            <a href="/">
+                {% include '_partial/logo.html' %}
+            </a>
+        </header>
+        <div class="signup-box">
+            <div class="signup-box-inner">
+                {% block content %}{% endblock %}
+                <div class="signup-box-footer">
+                    {% block footer %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% render_bundle 'main' 'js' %}
+{% block js %}{% endblock %}
+</body>
+</html>
+︀

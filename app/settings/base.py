@@ -30,12 +30,12 @@ ROOT_APP = 'dropshop'
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'webpack_loader',
     ROOT_APP,
 ]
 
@@ -47,6 +47,7 @@ MIDDLEWARE = [
     '{}.accounts.middleware.AuthenticationMiddleware'.format(ROOT_APP),
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    '{}.errors.HandleExceptionMiddleware'.format(ROOT_APP),
 ]
 
 ROOT_URLCONF = 'router'
@@ -127,9 +128,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/assets/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, ROOT_APP, 'static'),
 )
+
+for static_dir in (STATIC_ROOT, *STATICFILES_DIRS):
+    os.makedirs(static_dir, exist_ok=True)
 
 # WEBPACK
 WEBPACK_LOADER = {

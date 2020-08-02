@@ -2,51 +2,41 @@
 const path = require('path')
 const fs = require('fs')
 const webpack = require('webpack')
+const BundleTracker = require('webpack-bundle-tracker')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const WriteFilePlugin = require('write-file-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const CreateManifestPlugin = require('./build/CreateManifestPlugin')
-const buildManifest = require('./src/build-manifest')
 
 // Path to output directory relative to project root
-const OUTPUT_DIR = '_dist/'
-const ENTRY_DIR_PATH = 'src/entries'
+const OUTPUT_DIR = 'dropshop/static/dist/'
+
+// Path to output directory relative to project root
+const ENTRY_DIR_PATH = 'assets/entries'
+
+// The development server to use when in development/debug/hot-reload mode, for use
+// with webpack-dev-server
+const DEVELOPMENT_SERVER = 'http://localhost:3000'
+const DJANGO_SERVER = 'http://localhost:8000'
 const isProduction = process.env.NODE_ENV === 'production'
 
 const getProjectAbsolutePath = (p) => path.join(path.resolve(__dirname), p)
 
 function buildEntries(isDevServer) {
     const entryDirPath = getProjectAbsolutePath(`./${ENTRY_DIR_PATH}`)
-    const entry = {
-        content: path.resolve(`${entryDirPath}/../content/content.js`)
-    }
+    const entry = {}
 
-    const plugins = []
-    fs.readdirSync(path.resolve(entryDirPath))
-        .filter(file => !fs.statSync(path.join(entryDirPath, file))
-            .isDirectory() && file.endsWith('.js'))
+    fs.readdirSync(entryDirPath)
+        .filter(file => !fs.statSync(path.join(entryDirPath, file)).isDirectory() && file.endsWith('.js'))
         .forEach(file => {
             const name = path.parse(file).name
             entry[name] = ['@babel/polyfill', `${entryDirPath}/${file}`]
 
-            const templatePath = path.resolve(`${entryDirPath}/../templates/${name}.html`)
-            if (fs.existsSync(templatePath)) {
-                plugins.push(
-                    new HtmlWebpackPlugin({
-                        template: templatePath,
-                        filename: `${name}.html`,
-                        chunks: [name],
-                    }),
+            if (isDevServer) {
+                entry[name].unshift(
+                    `webpack-dev-server/client?${DEVELOPMENT_SERVER}`,
+                    'webpack/hot/only-dev-server',
                 )
             }
         })
-
-    return {
-        entry,
-        plugins,
-    }
+    return entry
 }
 
 function buildWebpackConfig() {
@@ -55,37 +45,28 @@ function buildWebpackConfig() {
         isDevServer,
     }
 
-    const { entry, plugins: entryPlugins } = buildEntries(isDevServer)
+    const entry = buildEntries(isDevServer)
     const output = {
         path: getProjectAbsolutePath('./' + OUTPUT_DIR),
-        filename: 'js/[name].[hash].js',
-        chunkFilename: 'js/[id].[contenthash].js',
+        filename: '[name].[hash].js',
     }
 
     const plugins = [
-        new CleanWebpackPlugin(),
-        ...entryPlugins,
         new webpack.DefinePlugin({
             'process.env': environment,
         }),
+        new BundleTracker({ path: __dirname, filename: './webpack-stats.json' }),
         new MiniCssExtractPlugin({
             filename: '[name].[hash].css',
             chunkFilename: '[id].[hash].css',
         }),
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: getProjectAbsolutePath('images'), to: 'images' },
-            ]
-        }),
-        new CreateManifestPlugin(buildManifest),
-        new WriteFilePlugin(),
     ]
 
-    if (!isProduction) {
+    if (isProduction) {
         plugins.push(new webpack.SourceMapDevToolPlugin({
             // asset matching
-            filename: null, // inline
-            exclude: [/node_modules/],
+            filename: '[file].map',
+            exclude: [/vendor\.(.*)\.js/, /node_modules/],
 
             // quality/performance
             module: true,
@@ -145,6 +126,7 @@ function buildWebpackConfig() {
         },
         {
             test: /\.(png|jpe?g|gif|bmp|webp)$/,
+            exclude: [/node_modules/],
             use: [
                 {
                     loader: 'url-loader',
@@ -175,6 +157,7 @@ function buildWebpackConfig() {
         },
         {
             test: /\.scss$/,
+            exclude: [/importable\//],
             use: [
                 'style-loader',
                 {
@@ -183,6 +166,13 @@ function buildWebpackConfig() {
                         hmr: isDevServer,
                     },
                 },
+                ...sassPlugins,
+            ],
+        },
+        {
+            test: /importable\/.+\.scss$/,
+            use: [
+                'style-loader',
                 ...sassPlugins,
             ],
         },
@@ -199,7 +189,6 @@ function buildWebpackConfig() {
                         modules: false,
                         debug: !isProduction,
                         useBuiltIns: 'usage',
-                        corejs: '3',
                     },
                 ],
                 '@babel/react',
@@ -214,6 +203,7 @@ function buildWebpackConfig() {
         },
     }
 
+    const alias = {}
     let devServer
     if (isProduction) {
         environment.NODE_ENV = JSON.stringify('production')
@@ -228,10 +218,21 @@ function buildWebpackConfig() {
         )
 
         if (isDevServer) {
+            // Tell django to use this URL to load packages and not use STATIC_URL + bundle_name
+            output.publicPath = `${DEVELOPMENT_SERVER}/${OUTPUT_DIR}`
+            plugins.push(new webpack.HotModuleReplacementPlugin())
+
+            babelLoader.options.plugins.push('react-hot-loader/babel')
+
             devServer = {
                 hot: true,
                 overlay: true,
+                headers: {
+                    'Access-Control-Allow-Origin': `${DJANGO_SERVER}, ${DEVELOPMENT_SERVER}`,
+                },
             }
+
+            alias['react-dom'] = '@hot-loader/react-dom'
         }
     }
 
@@ -244,12 +245,9 @@ function buildWebpackConfig() {
     })
 
     return {
-        mode: isProduction ? 'production' : 'development',
+        mode: !isProduction ? 'development' : 'production',
         cache: true,
-        entry: {
-            ...entry,
-            reloader: path.resolve(path.join(__dirname, 'build/reloader.raw.js')),
-        },
+        entry,
         plugins,
         optimization: {
             minimize: isProduction,
@@ -263,6 +261,7 @@ function buildWebpackConfig() {
             modules: [
                 'node_modules',
             ],
+            alias,
         },
         devServer,
     }
