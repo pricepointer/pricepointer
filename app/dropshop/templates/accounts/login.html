@@ -1,6 +1,11 @@
 {% extends "accounts/base/signup.html" %}
 {% load render_bundle from webpack_loader %}
 
+{% block css %}
+    {% render_bundle 'login' 'css' %}
+{% endblock %}
+
+
 {% block js %}
     {% render_bundle 'login' 'js' %}
 {% endblock %}
@@ -11,14 +16,21 @@
 
 {% block content %}
     <form method="POST" action="">
+        {% if errors and errors.general %}
+            <div class="error-alert">{{ errors.general }}</div>
+        {% endif %}
         <div class="signup-box-form">
             <label for="email">Email</label>
-            <input type="text" id="email" name="email"/>
+            <input type="text" id="email" name="email"
+                   value="{{ form.email|default_if_none:'' }}" required/>
+            {% if errors and errors.email %}
+                <div class="error-message">{{ errors.email }}</div>
+            {% endif %}
             <label for="password">Password</label>
-            <input type="password" id="password" name="password"/>
+            <input type="password" id="password" name="password" required/>
         </div>
         <div class="signup-box-button">
-            <button type="submit" class="button button-secondary button-shadow button-block" href="#">
+            <button type="submit" class="button button-secondary button-shadow button-block">
                 Sign in
             </button>
         </div>
@@ -28,6 +40,6 @@
 
 {% block footer %}
     <div class="link">
-        Don't have an account? <a href="/signup">Sign up</a>
+        Don't have an account? <a href="{% url 'signup' %}">Sign up</a>
     </div>
 {% endblock %}

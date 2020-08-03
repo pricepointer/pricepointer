@@ -1,7 +1,9 @@
 from typing import Type
 
-from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY
+from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY, _get_backends
 from django.contrib.auth.signals import user_logged_out, user_logged_in
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.middleware.csrf import rotate_token
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -19,7 +21,7 @@ def authenticate(request, email, password, **kwargs):
     backend = ModelBackend()
     user = backend.authenticate(request, email=email, password=password)
     if not user:
-        msg = _('Sign in failed.')
+        msg = _('The provided email address and/or password do not match our records.')
         raise exceptions.AuthenticationFailed(msg)
 
     return user
@@ -51,7 +53,7 @@ def login(request, user, backend=None):
     try:
         backend = backend or user.backend
     except AttributeError:
-        backends = get_backends(return_tuples=True)
+        backends = _get_backends(return_tuples=True)
         if len(backends) == 1:
             _, backend = backends[0]
         else:
@@ -95,6 +97,34 @@ def logout(request):
 
     if hasattr(request, 'user'):
         request.user = AnonymousUser()
+
+
+def create_user(name, email, password):
+    errors = {}
+    if not (name and name.strip()):
+        errors['name'] = ValidationError(message='Name is a required field')
+
+    try:
+        validate_email(email)
+    except ValidationError:
+        errors['email'] = ValidationError(message='Email must be valid')
+
+    if User.objects.filter(email__iexact=email).exists():
+        errors['email'] = ValidationError(message='This email address is already in use. Please sign in.')
+
+    if not password:
+        errors['password'] = ValidationError(message='Password is a required field')
+
+    if errors:
+        raise ValidationError(message=errors)
+
+    user = User(
+        name=name,
+        email=email,
+    )
+    user.set_password(password)
+    user.save()
+    return user
 
 
 def _get_user_session_key(request):

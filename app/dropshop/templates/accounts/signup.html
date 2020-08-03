@@ -1,6 +1,11 @@
 {% extends "accounts/base/signup.html" %}
 {% load render_bundle from webpack_loader %}
 
+{% block css %}
+    {% render_bundle 'signup' 'css' %}
+{% endblock %}
+
+
 {% block js %}
     {% render_bundle 'signup' 'js' %}
 {% endblock %}
@@ -10,25 +15,41 @@
 {% endblock %}
 
 {% block content %}
-    <form>
+    <form method="POST" action="">
+        {% if errors and errors.general %}
+            <div class="error-alert">{{ errors.general }}</div>
+        {% endif %}
         <div class="signup-box-form">
             <label>Full Name</label>
-            <input type="text"/>
+            <input name="name" type="text" {% if errors and errors.name %}class="error"{% endif %}
+                   value="{{ form.name|default_if_none:'' }}" required/>
+            {% if errors and errors.name %}
+                <div class="error-message">{{ errors.name }}</div>
+            {% endif %}
             <label>Email</label>
-            <input type="text"/>
+            <input name="email" type="text" {% if errors and errors.email %}class="error"{% endif %}
+                   value="{{ form.email|default_if_none:'' }}" required/>
+            {% if errors and errors.email %}
+                <div class="error-message">{{ errors.email }}</div>
+            {% endif %}
             <label>Password</label>
-            <input type="text"/>
+            <input name="password" type="password" {% if errors and errors.password %}class="error"{% endif %}
+                   required/>
+            {% if errors and errors.password %}
+                <div class="error-message">{{ errors.password }}</div>
+            {% endif %}
         </div>
         <div class="signup-box-button">
-            <button type="submit" class="button button-secondary button-shadow button-block" href="#">
+            <button type="submit" class="button button-secondary button-shadow button-block">
                 Sign up
             </button>
         </div>
+        {% csrf_token %}
     </form>
 {% endblock %}
 
 {% block footer %}
     <div class="link">
-        Already have an account? <a href="/signin">Sign in</a>
+        Already have an account? <a href="{% url 'signin' %}">Sign in</a>
     </div>
 {% endblock %}

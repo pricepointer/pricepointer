@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const webpack = require('webpack')
 const BundleTracker = require('webpack-bundle-tracker')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 // Path to output directory relative to project root
@@ -52,6 +53,7 @@ function buildWebpackConfig() {
     }
 
     const plugins = [
+        new CleanWebpackPlugin(),
         new webpack.DefinePlugin({
             'process.env': environment,
         }),
@@ -61,18 +63,6 @@ function buildWebpackConfig() {
             chunkFilename: '[id].[hash].css',
         }),
     ]
-
-    if (isProduction) {
-        plugins.push(new webpack.SourceMapDevToolPlugin({
-            // asset matching
-            filename: '[file].map',
-            exclude: [/vendor\.(.*)\.js/, /node_modules/],
-
-            // quality/performance
-            module: true,
-            columns: false,
-        }))
-    }
 
     const sassPlugins = [
         {
@@ -245,14 +235,14 @@ function buildWebpackConfig() {
     })
 
     return {
-        mode: !isProduction ? 'development' : 'production',
+        mode: isProduction ? 'production' : 'development',
         cache: true,
         entry,
         plugins,
         optimization: {
             minimize: isProduction,
         },
-        devtool: false,
+        devtool: isProduction ? false : 'inline-source-map',
         module: {
             rules,
         },
