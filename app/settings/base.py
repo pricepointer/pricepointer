@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from datetime import timedelta
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -31,6 +33,8 @@ ROOT_APP = 'dropshop'
 # Application definition
 
 INSTALLED_APPS = [
+    '{}.prepatch'.format(ROOT_APP),
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -74,6 +78,9 @@ WSGI_APPLICATION = 'wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {}
+MIGRATION_MODULES = {
+    'auth': '{}.accounts.auth'.format(ROOT_APP),
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -98,6 +105,7 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         '{}.accounts.authentication.SessionAuthentication'.format(ROOT_APP),
     ],
     'EXCEPTION_HANDLER': '{}.errors.exception_handler'.format(ROOT_APP),
@@ -105,6 +113,11 @@ REST_FRAMEWORK = {
 }
 
 # Authentication
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=200),
+}
 
 AUTH_USER_MODEL = '{}.User'.format(ROOT_APP)
 AUTHENTICATION_BACKENDS = [

@@ -34,33 +34,10 @@ class UsersApiView(APIView):
         return Response(UserSerializer(user).data)
 
 
-class SessionsApiView(APIView):
-    class CustomPermission(BasePermission):
-        def has_permission(self, request, view):
-            return bool(
-                request.method in ('POST', 'HEAD', 'OPTIONS') or
-                (request.user and
-                 request.user.is_authenticated)
-            )
-
-    permission_classes = (CustomPermission,)
-
+class UserMeView(APIView):
     def get(self, request):
         # Already logged in, getting self details
         return Response(UserSerializer(request.user).data)
-
-    def post(self, request):
-        # Login
-        data = request.data
-        form = {'email': data['email']}
-        user = authenticate(request, **form, password=data['password'])
-        login(request, user)
-        return Response(UserSerializer(user).data)
-
-    def delete(self, request):
-        # Logout
-        logout(request)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class SignupView(View):
