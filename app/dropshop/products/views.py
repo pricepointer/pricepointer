@@ -19,17 +19,3 @@ class ProductListView(APIView):
     def get(self, request):
         product = Product.objects.all()
         return Response(ProductSerializer(product, many=True).data)
-
-
-# class PriceListView(APIView):
-#     def post(self, request):
-#         # Read from request payload
-#         data = request.data
-#         user = User.objects.get(id=data['user'])
-#         price = Price(user=user, html=data['html'], price=data['price'], error=data['error'], )
-#         price.save()
-#         return Response(PriceSerializer(price).data)
-#
-#     def get(self, request):
-#         price = Price.objects.all()
-#         return Response(PriceSerializer(price, many=True).data)

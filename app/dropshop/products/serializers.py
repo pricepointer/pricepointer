@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 
 from .models import Price, Product
+from ..accounts.models import User
 
 
 class ProductSerializer(ModelSerializer):
@@ -17,4 +18,12 @@ class PriceSerializer(ModelSerializer):
         model = Price
         fields = (
             'user', 'date', 'price', 'error', 'html'
+        )
+
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'name', 'password', 'email'
         )

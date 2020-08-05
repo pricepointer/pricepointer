@@ -1,10 +1,66 @@
 from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
-from rest_framework import exceptions
+from rest_framework import exceptions, status
+from rest_framework.permissions import BasePermission
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .authentication import authenticate, require_authentication, logout, login, create_user
+from .authentication import authenticate, create_user, login, logout, require_authentication
+from ..products.serializers import UserSerializer
+
+
+class UsersApiView(APIView):
+    def post(self, request):
+        data = request.data
+
+        form = {
+            'name': data['name'],
+            'email': data['email']
+        }
+
+        try:
+            user = create_user(**form, password=data['password'])
+            user.save()
+            login(request, user)
+        except ValidationError as error:
+            errors = {
+                field: messages[0]
+                for (field, messages) in error
+            }
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(UserSerializer(user).data)
+
+
+class SessionsApiView(APIView):
+    class CustomPermission(BasePermission):
+        def has_permission(self, request, view):
+            return bool(
+                request.method in ('POST', 'HEAD', 'OPTIONS') or
+                (request.user and
+                 request.user.is_authenticated)
+            )
+
+    permission_classes = (CustomPermission,)
+
+    def get(self, request):
+        # Already logged in, getting self details
+        return Response(UserSerializer(request.user).data)
+
+    def post(self, request):
+        # Login
+        data = request.data
+        form = {'email': data['email']}
+        user = authenticate(request, **form, password=data['password'])
+        login(request, user)
+        return Response(UserSerializer(user).data)
+
+    def delete(self, request):
+        # Logout
+        logout(request)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class SignupView(View):

@@ -23,6 +23,7 @@ SECRET_KEY = 'wo9+*po&j5xwh&n9*o^2r=m+3lg*(^_z=fe@k9b#&sy(sv+cj*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+API_VERSION = 1
 
 ALLOWED_HOSTS = ['*']
 

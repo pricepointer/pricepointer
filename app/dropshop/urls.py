@@ -1,13 +1,13 @@
-from django.urls import path, include
+from django.conf import settings
+from django.urls import include, path
 
 from . import models
-from . import views
-from .products import urls as products_urls
+from . import api, views
 from .accounts.urls import urlpatterns as accounts_urls
 
 urlpatterns = [
     path('', views.index, name='index'),
 
     *accounts_urls,
-    path('products/', include(products_urls), name='products'),
+    path('api/v{}/'.format(settings.API_VERSION), include(api, namespace='api')),
 ]
