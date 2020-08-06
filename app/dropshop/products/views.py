@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -7,6 +8,8 @@ from ..accounts.models import User
 
 
 class ProductListView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         # Read from request payload
         data = request.data

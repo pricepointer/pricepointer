@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
+import { getProfile, login } from '../../common/api'
 import CurrentTracks from './CurrentTracks'
-import SignUp from './SignUp'
+import SignIn from './SignIn'
 
 const styles = {
     button: {
@@ -19,8 +20,16 @@ class Popup extends PureComponent {
     constructor(props) {
         super(props)
 
-        this.state = {
-        }
+        this.state = { user: null }
+    }
+
+    componentDidMount() {
+        getProfile()
+            .then((user) => {
+                this.setState({
+                    user,
+                })
+            })
     }
 
     handleClick = () => {
@@ -34,20 +43,40 @@ class Popup extends PureComponent {
         window.close()
     }
 
+    handleLogin = (email, password) => {
+        login({
+            email,
+            password,
+        })
+            .then((user) => {
+                this.setState({
+                    user,
+                })
+            })
+    }
+
     render() {
         const { classes } = this.props
+        const { user } = this.state
 
         return (
             <div>
-                <button
-                    className={classes.button}
-                    type="button"
-                    onClick={this.handleClick}
-                >
-                    Select price
-                </button>
-                <CurrentTracks />
-                <SignUp />
+                {
+                    !user
+                        ? <SignIn handleLogin={this.handleLogin} />
+                        : (
+                            <div>
+                                <button
+                                    className={classes.button}
+                                    type="button"
+                                    onClick={this.handleClick}
+                                >
+                                    Select price
+                                </button>
+                                <CurrentTracks user={user} />
+                            </div>
+                        )
+                }
             </div>
         )
     }

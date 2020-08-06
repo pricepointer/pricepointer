@@ -1,8 +1,8 @@
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
 import { get } from '../../common/api'
 
-const user = 1
 const productUrl = 'products/'
 
 const styles = {
@@ -13,6 +13,14 @@ const styles = {
 }
 
 class CurrentTracks extends PureComponent {
+    static propTypes = {
+        user: PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            name: PropTypes.string.isRequired,
+            email: PropTypes.string.isRequired,
+        }).isRequired,
+    }
+
     constructor(props) {
         super(props)
 
@@ -26,12 +34,13 @@ class CurrentTracks extends PureComponent {
 
 
     componentDidMount() {
+        const { user } = this.props
         get(productUrl)
             .then(
                 (result) => {
                     this.setState({
                         // isLoaded: true,
-                        products: result.filter(product => product.user === user),
+                        products: result.filter(product => product.user === user.id),
                     })
                 },
                 () => {

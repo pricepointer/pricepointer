@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import withStyles from 'react-jss'
+import { post } from '../../common/api'
 import { getElementXPath } from '../helpers'
 
-const productsUrl = 'http://127.0.0.1:8000/products/'
-
+const productsUrl = 'products/'
 const styles = {
     container: {
         width: 200,
@@ -31,13 +31,7 @@ function generateProduct(target, priceThreshold, dayTracker, givenName) {
     }
 
 
-    fetch(productsUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    })
+    post(productsUrl)
         .then(() => {
             console.log('Success:', data)
         })

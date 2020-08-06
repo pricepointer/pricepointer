@@ -1,11 +1,14 @@
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
-import { post } from '../../common/api'
 
-const signinUrl = 'signin/'
 const styles = {}
 
 class SignIn extends PureComponent {
+    static propTypes = {
+        handleLogin: PropTypes.func.isRequired,
+    }
+
     constructor(props) {
         super(props)
 
@@ -21,55 +24,43 @@ class SignIn extends PureComponent {
     }
 
     handleLogin = () => {
+        const { handleLogin } = this.props
         const { email, password } = this.state
-        const account = {
-            password,
-            email,
-        }
-        post(signinUrl, account)
-            .then(() => {
-                console.log('Success:', account)
-            })
-            .catch((error) => {
-                console.error('Error', error)
-            })
+
+        handleLogin(email, password)
     }
 
     render() {
         const { email, password } = this.state
         return (
             <div>
-                <form>
-                    <label htmlFor="email">
-                        E-mail:
-                        <input
-                            type="text"
-                            id="email"
-                            value={email}
-                            onChange={this.handleChange}
-                        />
-                    </label>
-                    <label htmlFor="password">
-                        Password:
-                        <input
-                            type="text"
-                            id="password"
-                            value={password}
-                            onChange={this.handleChange}
-                        />
-                    </label>
-                    <button
-                        type="submit"
-                        onClick={this.handleLogin}
-                    >
-                        Login
-                    </button>
-                </form>
+                <label htmlFor="email">
+                    E-mail:
+                    <input
+                        type="text"
+                        id="email"
+                        value={email}
+                        onChange={this.handleChange}
+                    />
+                </label>
+                <label htmlFor="password">
+                    Password:
+                    <input
+                        type="text"
+                        id="password"
+                        value={password}
+                        onChange={this.handleChange}
+                    />
+                </label>
+                <button
+                    type="button"
+                    onClick={this.handleLogin}
+                >
+                    Login
+                </button>
             </div>
         )
     }
 }
-
-// grab all info for each item that is user id
 
 export default withStyles(styles)(SignIn)

@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
 import { post } from '../../common/api'
 
-const signupUrl = 'signup/'
+const signupUrl = 'accounts/'
+const tokenUrl = 'accounts/token/'
 const styles = {}
 
 class SignUp extends PureComponent {
@@ -28,40 +29,25 @@ class SignUp extends PureComponent {
             password,
             email,
         }
+        const login = {
+            name,
+            password,
+        }
         post(signupUrl, account)
             .then(() => {
-                console.log('Success:', account)
+                post(tokenUrl, login)
+                    .then((response) => {
+                        console.log(response)
+                        localStorage.setItem('token', response)
+                    })
+                    .catch((error) => {
+                        console.error('Error', error)
+                    })
             })
             .catch((error) => {
                 console.error('Error', error)
             })
-
-        //     {
-        //         name, password, email, exists,
-        //     } = this.state
-        // this.validationCheck(email)
-        // if (exists) {
-        //     alert('This e-mail is already signed up! Try logging in!')
-        // } else {
-        //     this.createUser(name, password, email)
-        // }
     }
-
-    // createUser = (name, password, email) => {
-    //     const data = {
-    //         name,
-    //         password,
-    //         email,
-    //     }
-    //
-    //     post(userUrl)
-    //         .then(() => {
-    //             console.log('Success:', data)
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error', error)
-    //         })
-    // }
 
     render() {
         const { name, email, password } = this.state

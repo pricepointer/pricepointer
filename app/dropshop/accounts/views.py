@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from rest_framework import exceptions, status
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -12,6 +12,8 @@ from ..products.serializers import UserSerializer
 
 
 class UsersApiView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         data = request.data
 
@@ -35,6 +37,8 @@ class UsersApiView(APIView):
 
 
 class UserMeView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request):
         # Already logged in, getting self details
         return Response(UserSerializer(request.user).data)
