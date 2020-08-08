@@ -9,11 +9,10 @@ from rest_framework.views import APIView
 
 from .authentication import authenticate, create_user, login, logout, require_authentication
 from ..products.serializers import UserSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UsersApiView(APIView):
-    permission_classes = (IsAuthenticated,)
-
     def post(self, request):
         data = request.data
 
@@ -33,7 +32,12 @@ class UsersApiView(APIView):
             }
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(UserSerializer(user).data)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'user': UserSerializer(user).data,
+        })
 
 
 class UserMeView(APIView):

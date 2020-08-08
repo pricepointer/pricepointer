@@ -2,8 +2,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Price, Product
-from .serializers import PriceSerializer, ProductSerializer
+from .models import Product
+from .serializers import ProductSerializer, PriceSerializer
 from ..accounts.models import User
 
 

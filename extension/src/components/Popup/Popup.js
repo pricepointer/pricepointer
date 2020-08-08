@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
-import { getProfile, login } from '../../common/api'
+import {
+    getProfile, login, logout, signup,
+} from '../../common/api'
 import CurrentTracks from './CurrentTracks'
 import SignIn from './SignIn'
 
@@ -8,10 +10,9 @@ const styles = {
     button: {
         outline: 'none',
     },
-    input: {
-        background: 'transparent',
-        border: 'none',
-        outline: 'none',
+
+    container: {
+        width: 150,
     },
 }
 
@@ -20,7 +21,10 @@ class Popup extends PureComponent {
     constructor(props) {
         super(props)
 
-        this.state = { user: null }
+        this.state = {
+            user: null,
+            isLoading: true,
+        }
     }
 
     componentDidMount() {
@@ -28,6 +32,12 @@ class Popup extends PureComponent {
             .then((user) => {
                 this.setState({
                     user,
+                    isLoading: false,
+                })
+            })
+            .catch(() => {
+                this.setState({
+                    isLoading: false,
                 })
             })
     }
@@ -43,6 +53,15 @@ class Popup extends PureComponent {
         window.close()
     }
 
+    handleSignup = (accountData) => {
+        signup(accountData)
+            .then((user) => {
+                this.setState({
+                    user,
+                })
+            })
+    }
+
     handleLogin = (email, password) => {
         login({
             email,
@@ -55,17 +74,28 @@ class Popup extends PureComponent {
             })
     }
 
+    handleLogout = () => {
+        logout()
+        this.setState({
+            user: null,
+        })
+    }
+
     render() {
         const { classes } = this.props
-        const { user } = this.state
+        const { user, isLoading } = this.state
+
+        if (isLoading) {
+            return null
+        }
 
         return (
             <div>
                 {
                     !user
-                        ? <SignIn handleLogin={this.handleLogin} />
+                        ? <SignIn handleLogin={this.handleLogin} handleSignup={this.handleSignup} />
                         : (
-                            <div>
+                            <div className={classes.container}>
                                 <button
                                     className={classes.button}
                                     type="button"
@@ -73,6 +103,9 @@ class Popup extends PureComponent {
                                 >
                                     Select price
                                 </button>
+                                <div>
+                                    <p onClick={this.handleLogout}>logout</p>
+                                </div>
                                 <CurrentTracks user={user} />
                             </div>
                         )

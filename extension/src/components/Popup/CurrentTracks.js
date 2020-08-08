@@ -7,8 +7,14 @@ const productUrl = 'products/'
 
 const styles = {
     item: {
-        width: 150,
-        height: 25,
+        border: '1px #000000 solid',
+        display: 'flex',
+        alignContent: 'flex-start',
+    },
+
+    price: {
+        textAlign: 'right',
+        display: 'inline-block',
     },
 }
 
@@ -26,9 +32,6 @@ class CurrentTracks extends PureComponent {
 
         this.state = {
             products: [],
-
-            // error: null,
-            // isLoaded: false,
         }
     }
 
@@ -61,10 +64,19 @@ class CurrentTracks extends PureComponent {
             <div>
                 {
                     products.map(product => (
-                        <div className={classes.item}>
-                            <a href={product.website} target="_blank" rel="noopener noreferrer">
+                        <div className={classes.item} key={product.id}>
+                            <a
+                                style={{ flex: 1 }}
+                                href={product.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+
                                 {product.name}
                             </a>
+                            <div className={classes.price}>
+                                {product.price}
+                            </div>
                         </div>
                     ))
                 }

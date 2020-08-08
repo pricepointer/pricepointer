@@ -35,12 +35,15 @@ async function refreshRetry(promise) {
     return post(`accounts/token/refresh/`, {
         refresh,
     })
-        .then(({ access }) => setAccessToken(access)
-            .then(() => promise), () => {
-            // TODO: Handle refresh error later
-            console.error('Need to handle this error!')
-            return null
-        })
+        .then(
+            ({ access }) => setAccessToken(access)
+                .then(() => promise),
+            () => {
+                // TODO: Handle refresh error later
+                console.error('refresh issue')
+                return null
+            },
+        )
 }
 
 async function getFetchOptions(headers = {}) {
@@ -96,9 +99,22 @@ export function getProfile() {
     return get(`accounts/me/`)
 }
 
+export function signup(account) {
+    // eslint-disable-next-line no-use-before-define
+    return noTokenPost('accounts/', account)
+        .then(async ({ access, refresh, user }) => {
+            await Promise.all([
+                setAccessToken(access),
+                setRefreshToken(refresh),
+            ])
+
+            return user
+        })
+}
+
 export function login(credentials) {
     // eslint-disable-next-line no-use-before-define
-    return post(`accounts/token/`, credentials)
+    return noTokenPost(`accounts/token/`, credentials)
         .then(async ({ access, refresh }) => {
             await Promise.all([
                 setAccessToken(access),
@@ -122,4 +138,33 @@ export function post(url, data, options = {}) {
         ...options,
         body: JSON.stringify(data),
     }))
+}
+
+export function noTokenPost(url, data, options = {}) {
+    return fetch(`${baseUrl}${url}`, {
+        headers: { 'Content-Type': `application/json` },
+        method: 'POST',
+        ...options,
+        body: JSON.stringify(data),
+    })
+        .then((res) => {
+            if (res.status >= 400) {
+                throw res
+            }
+
+            return res.json()
+        })
+        .catch(res => res.json()
+            .then((error) => {
+                // eslint-disable-next-line no-throw-literal
+                throw {
+                    error,
+                    status: res.status,
+                }
+            }))
+}
+
+export function logout() {
+    setAccessToken('')
+    setRefreshToken('')
 }

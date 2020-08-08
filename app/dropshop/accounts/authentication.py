@@ -1,3 +1,4 @@
+import re
 from typing import Type
 
 from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY, _get_backends
@@ -143,6 +144,9 @@ class SessionAuthentication(BaseAuthentication):
         Returns a `User` if the request session currently has a logged in user.
         Otherwise returns `None`.
         """
+
+        if re.match(r'^\/api', request.META.get('PATH_INFO', '')):
+            return None
 
         # Get the session-based user from the underlying HttpRequest object
         user = getattr(request._request, 'user', None)
