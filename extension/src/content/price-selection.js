@@ -14,8 +14,8 @@ let hoveredElement = null
 const styles = {
     highlighted: {
         position: 'fixed',
-        background: 'rgba(255,63,63,0.20) !important',
-        border: '1px solid #f00 !important',
+        background: 'rgba(15,220,205,0.20) !important',
+        border: '1px solid #0fdccd !important',
         zIndex: 999999999999,
         pointerEvents: 'none',
     },

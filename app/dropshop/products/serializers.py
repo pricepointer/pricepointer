@@ -17,6 +17,8 @@ class ProductSerializer(ModelSerializer):
 
     def get_price(self, product):
         price_object = product.price_set.order_by('date').last()
+        if not price_object:
+            return None
         return price_object.price
 
 

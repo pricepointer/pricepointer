@@ -13,8 +13,7 @@ class ProductListView(APIView):
     def post(self, request):
         # Read from request payload
         data = request.data
-        user = User.objects.get(id=data['user'])
-        product = Product(user=user, website=data['website'], price_path=data['price_path'],
+        product = Product(user=request.user, website=data['website'], price_path=data['price_path'],
                           target_price=data['target_price'], name=data['name'])
         product.save()
         return Response(ProductSerializer(product).data)

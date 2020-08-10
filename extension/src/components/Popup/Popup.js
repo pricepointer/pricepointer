@@ -9,13 +9,22 @@ import SignIn from './SignIn'
 const styles = {
     button: {
         outline: 'none',
+        backgroundColor: '#0fdccd',
+        width: 75,
+        height: 40,
+        borderRadius: 10,
     },
 
     container: {
-        width: 150,
+        display: 'flex',
     },
-}
 
+    outerContainer: {
+        width: 150,
+        background: '#1f1f1f',
+    },
+
+}
 
 class Popup extends PureComponent {
     constructor(props) {
@@ -95,16 +104,22 @@ class Popup extends PureComponent {
                     !user
                         ? <SignIn handleLogin={this.handleLogin} handleSignup={this.handleSignup} />
                         : (
-                            <div className={classes.container}>
-                                <button
-                                    className={classes.button}
-                                    type="button"
-                                    onClick={this.handleClick}
-                                >
-                                    Select price
-                                </button>
-                                <div>
-                                    <p onClick={this.handleLogout}>logout</p>
+                            <div className={classes.outerContainer}>
+                                <div className={classes.container}>
+                                    <button
+                                        className={classes.button}
+                                        type="button"
+                                        onClick={this.handleClick}
+                                    >
+                                        Select price
+                                    </button>
+                                    <button
+                                        className={classes.button}
+                                        type="button"
+                                        onClick={this.handleLogout}
+                                    >
+                                        Logout
+                                    </button>
                                 </div>
                                 <CurrentTracks user={user} />
                             </div>

@@ -15,6 +15,7 @@ const styles = {
     price: {
         textAlign: 'right',
         display: 'inline-block',
+        color: '#ffffff',
     },
 }
 
@@ -66,7 +67,7 @@ class CurrentTracks extends PureComponent {
                     products.map(product => (
                         <div className={classes.item} key={product.id}>
                             <a
-                                style={{ flex: 1 }}
+                                style={{ flex: 1, color: '#ffffff' }}
                                 href={product.website}
                                 target="_blank"
                                 rel="noopener noreferrer"
