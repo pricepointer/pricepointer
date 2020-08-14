@@ -7,24 +7,36 @@ import { getElementXPath } from '../helpers'
 const productsUrl = 'products/'
 const styles = {
     container: {
-        width: 170,
-        height: 265,
-        background: '#2d2d2d',
+        width: 350,
+        height: 400,
+        border: '5px #ffffff',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        backgroundColor: '#ffffff',
+        borderRadius: 5,
+    },
+    titleCard: {
+        margin: '10px 10px 10px',
     },
     input: {
-        border: 'none',
-        borderBottom: '2px solid #ffffff',
-        backgroundColor: '#1f1f1f',
+        width: '180px',
     },
+
+    inputCard: {
+        display: 'flex',
+        margin: '20px 0px 20px',
+        justifyContent: 'space-between',
+    },
+
     button: {
         outline: 'none',
-        backgroundColor: '#0fdccd',
-        width: 75,
-        height: 40,
-        borderRadius: 10,
+        backgroundColor: '#FEA127',
+        color: '#FFFFFF',
+        width: 140,
+        height: 50,
+        borderRadius: 5,
+        border: 'none',
+        fontSize: '18px',
     },
 
     buttonDiv: {
@@ -33,15 +45,19 @@ const styles = {
         justifyContent: 'center',
     },
 
-    whiteText: {
+    closeButton: {
+        width: '22px',
+        fontSize: '24px',
+        fontWeight: 400,
+        lineHeight: 0,
+        float: 'right',
+        border: 'none',
+        outline: 'none',
         color: '#ffffff',
-    },
-
-    title: {
-        color: '#0fdccd',
-    },
-    inputCard: {
-        alignItems: 'center',
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        margin: '15px 0px 0px',
     },
 }
 
@@ -80,6 +96,7 @@ class Prompt extends Component {
             dayTracker: 7,
             priceThreshold: '',
             name: '',
+            showError: false,
         }
     }
 
@@ -92,11 +109,13 @@ class Prompt extends Component {
         if (priceThreshold) {
             this.handleClick()
         } else {
-            alert('Please enter a valid price threshold')
+            this.setState({
+                showError: true,
+            })
         }
     }
 
-    handleCancel = () => {
+    handleClose = () => {
         const { handleClose } = this.props
         handleClose()
     }
@@ -115,49 +134,76 @@ class Prompt extends Component {
 
     render() {
         const { classes } = this.props
-        const { name, dayTracker, priceThreshold } = this.state
+        const {
+            name, dayTracker, priceThreshold, showError,
+        } = this.state
 
         return (
             <div className={classes.container}>
-                <h1 className={classes.title}> Price Point</h1>
-                <form>
+                <div
+                    style={{
+                        backgroundColor: '#FFC85E',
+                        height: '50px',
+                    }}
+                >
+                    <div className={classes.titleCard}>
+                        <h1
+                            style={{
+                                color: '#ffffff',
+                                textAlign: 'center',
+                            }}
+                        >
+                            Price Point
+                        </h1>
+                        <p
+                            className={classes.closeButton}
+                            onClick={this.handleClose}
+                        >
+                            x
+                        </p>
+                    </div>
+                </div>
+                <form style={{ margin: '40px 15px 40px' }}>
                     <div className={classes.inputCard}>
-                        <label className={classes.whiteText} htmlFor="name">
-                            Name of tracked object:
-                            <input
-                                className={classes.input}
-                                type="text"
-                                id="name"
-                                value={name}
-                                onChange={this.handleChange}
-                            />
-                        </label>
+                        <div htmlFor="name">
+                            Name
+                        </div>
+                        <input
+                            className={classes.input}
+                            type="text"
+                            id="name"
+                            value={name}
+                            onChange={this.handleChange}
+                        />
                     </div>
                     <div className={classes.inputCard}>
-                        <label className={classes.whiteText} htmlFor="dayTracker">
-                            Days to track:
-                            <input
-                                className={classes.input}
-                                type="number"
-                                id="dayTracker"
-                                value={dayTracker}
-                                onChange={this.handleChange}
-                            />
-                        </label>
+                        <div htmlFor="dayTracker">
+                            Watch for:
+                        </div>
+                        <input
+                            className={classes.input}
+                            type="number"
+                            id="dayTracker"
+                            value={dayTracker}
+                            onChange={this.handleChange}
+                        />
                     </div>
                     <div className={classes.inputCard}>
-                        <label className={classes.whiteText} htmlFor="priceThreshold">
-                            Notify me at:
-                            <input
-                                className={classes.input}
-                                type="number"
-                                id="priceThreshold"
-                                value={priceThreshold}
-                                onChange={this.handleChange}
-                            />
-                        </label>
+                        <div htmlFor="priceThreshold">
+                            Desired price:
+                        </div>
+                        <input
+                            className={classes.input}
+                            type="number"
+                            id="priceThreshold"
+                            value={priceThreshold}
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </form>
+                {showError && (
+                    <div style={{ color: '#b60000', textAlign: 'center' }}> Please enter a price </div>
+                )}
                 <div className={classes.buttonDiv}>
                     <button
                         type="submit"
@@ -165,13 +211,6 @@ class Prompt extends Component {
                         onClick={this.priceEnterCheck}
                     >
                         Submit
-                    </button>
-                    <button
-                        className={classes.button}
-                        type="button"
-                        onClick={this.handleCancel}
-                    >
-                        Cancel
                     </button>
                 </div>
             </div>

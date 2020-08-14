@@ -6,24 +6,60 @@ import {
 import CurrentTracks from './CurrentTracks'
 import SignIn from './SignIn'
 
+const max = '100%'
 const styles = {
     button: {
         outline: 'none',
-        backgroundColor: '#0fdccd',
-        width: 75,
-        height: 40,
-        borderRadius: 10,
+        backgroundColor: '#FEA127',
+        color: '#FFFFFF',
+        width: 140,
+        height: 50,
+        borderRadius: 5,
+        border: 'none',
+        fontSize: '18px',
     },
 
     container: {
+        width: max,
+        height: max,
+        margin: '15px 0px 15px',
+        justifyContent: 'center',
+        alignItems: 'center',
         display: 'flex',
     },
 
     outerContainer: {
-        width: 150,
-        background: '#1f1f1f',
+        width: 250,
+        border: '3 #ffffff',
+        display: 'flex',
+        flexDirection: 'column',
     },
 
+    closeButton: {
+        width: '22px',
+        fontSize: '24px',
+        fontWeight: 400,
+        lineHeight: 0,
+        float: 'right',
+        border: 'none',
+        outline: 'none',
+        color: '#ffffff',
+        position: 'absolute',
+        top: 0,
+        right: 0,
+    },
+
+    watchList: {
+        justifyContent: 'center',
+        alignContent: 'center',
+        margin: '30px 10px 10px',
+        height: '170px',
+        overflowY: 'auto',
+    },
+
+    titleCard: {
+        margin: '-5px 10px 10px',
+    },
 }
 
 class Popup extends PureComponent {
@@ -90,6 +126,10 @@ class Popup extends PureComponent {
         })
     }
 
+    handleClose = () => {
+        window.close()
+    }
+
     render() {
         const { classes } = this.props
         const { user, isLoading } = this.state
@@ -104,7 +144,34 @@ class Popup extends PureComponent {
                     !user
                         ? <SignIn handleLogin={this.handleLogin} handleSignup={this.handleSignup} />
                         : (
+
                             <div className={classes.outerContainer}>
+                                <div
+                                    style={{
+                                        backgroundColor: '#FFC85E',
+                                        height: '50px',
+                                    }}
+                                >
+                                    <div className={classes.titleCard}>
+                                        <h1
+                                            style={{
+                                                color: '#ffffff',
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            Price Point
+                                        </h1>
+                                        <p
+                                            className={classes.closeButton}
+                                            onClick={this.handleClose}
+                                        >
+                                            x
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className={classes.watchList}>
+                                    <CurrentTracks user={user} />
+                                </div>
                                 <div className={classes.container}>
                                     <button
                                         className={classes.button}
@@ -113,15 +180,7 @@ class Popup extends PureComponent {
                                     >
                                         Select price
                                     </button>
-                                    <button
-                                        className={classes.button}
-                                        type="button"
-                                        onClick={this.handleLogout}
-                                    >
-                                        Logout
-                                    </button>
                                 </div>
-                                <CurrentTracks user={user} />
                             </div>
                         )
                 }

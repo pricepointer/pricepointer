@@ -4,19 +4,20 @@ import withStyles from 'react-jss'
 import { get } from '../../common/api'
 
 const productUrl = 'products/'
-
+const TEXT_COLOR = '#515151'
 const styles = {
     item: {
-        border: '1px #000000 solid',
         display: 'flex',
         alignContent: 'flex-start',
+        margin: '5px 10px 10px',
     },
 
     price: {
         textAlign: 'right',
         display: 'inline-block',
-        color: '#ffffff',
+        color: TEXT_COLOR,
     },
+
 }
 
 class CurrentTracks extends PureComponent {
@@ -67,7 +68,7 @@ class CurrentTracks extends PureComponent {
                     products.map(product => (
                         <div className={classes.item} key={product.id}>
                             <a
-                                style={{ flex: 1, color: '#ffffff' }}
+                                style={{ flex: 1, color: TEXT_COLOR, textDecoration: 'none' }}
                                 href={product.website}
                                 target="_blank"
                                 rel="noopener noreferrer"
