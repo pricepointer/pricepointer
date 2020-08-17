@@ -1,0 +1,16 @@
+{% load constants %}
+<footer class="site-footer">
+    <div class="container">
+        <div class="site-footer-inner">
+            <div class="brand footer-brand">
+            </div>
+            <ul class="footer-links list-reset">
+                {% include '_partial/footer/links.html' %}
+            </ul>
+            <ul class="footer-social-links list-reset">
+                {% include '_partial/social.html' %}
+            </ul>
+            <div class="footer-copyright">&copy; {% now "Y" %} {% config 'site_name' %}</div>
+        </div>
+    </div>
+</footer>

@@ -1,31 +1,33 @@
+@import "../theme";
+
 // --------------------------------------------
 // Colors -------------------------------------
 // Usage example: color(primary, main)
 // --------------------------------------------
 $color: (
 	typography: (
-		1: #212B37,
-		2: #5C6F84,
-		3: #A8BCD3,
+		1: $black,
+		2: $grey800,
+		3: $grey600,
 		1i: #FFF,
 		2i: rgba( #FFF, .65 )
 	),
 	bg: (
-		1: #FFFFFF,
-		2: #F0F4FE,
+		1: #FFF,
+		2: $grey100,
 		3: #E7EBF6
 	),
 	primary: (
-		1: #5E52F6,
-		2: #8B82F9,
-		3: #473AF5,
-		4: #DBD8FF
+		1: $primary500,
+		2: $primary,
+		3: $primary600,
+		4: $primary200,
  	),
  	secondary: (
-		1: #6EE4D7,
-		2: #99ECE3,
-		3: #43DCCB,
-		4: #BBFFF8
+		1: $blue300,
+		2: $blue200,
+		3: $blue400,
+		4: $blue500
  	)
 );
 
@@ -33,8 +35,8 @@ $color: (
 // Typography ---------------------------------
 // --------------------------------------------
 $font__family: (
-	base: '"Lato", sans-serif', // font-family(base)
-	heading: '"PT Sans", sans-serif', // font-family(heading)
+	base: '#{$fontFamily}, sans-serif', // font-family(base)
+	heading: '#{$headerFontFamily}, sans-serif', // font-family(heading)
 	code: 'Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace', // font-family(code)
 	pre: '"Courier 10 Pitch", Courier, monospace' // font-family(pre)
 );

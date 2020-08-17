@@ -2,8 +2,13 @@
 @import "breakpoints";
 @import "theme";
 @import "./fonts";
-//@import "elements/button";
 @import "elements/form";
+
+@import "abstracts/variables";
+@import "abstracts/functions";
+@import "abstracts/mixins";
+@import "abstracts/include-media";
+@import "index/layout/footer";
 
 * {
   box-sizing: border-box;
@@ -44,14 +49,56 @@ a {
   }
 }
 
-//.logo {
-//  font-family: $headerFontFamily;
-//  font-weight: 900;
-//  font-size: 24px;
-//  color: $primary;
-//
-//  @include respond-to('mobile-portrait') {
-//    font-size: 20px;
-//  }
-//}
+.logo {
+  color: $black;
+  font-size: 20px;
+  font-weight: 900;
+  text-transform: lowercase;
+  font-family: $headerFontFamily;
 
+  &:hover {
+    color: inherit;
+  }
+}
+
+h1, h2, h3, h4, h5 {
+  @include font-family(heading);
+}
+
+/* Text meant only for screen readers. */
+.screen-reader-text {
+  clip: rect(1px, 1px, 1px, 1px);
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  word-wrap: normal !important; /* Many screen reader and browser combinations announce broken words as they would appear visually. */
+  &:focus {
+    border-radius: 2px;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+    clip: auto !important;
+    display: block;
+    @if (get-font-family(heading) != get-font-family(base)) {
+      @include font-family(heading);
+    }
+    @include font-size(7, mobile, true, false, true);
+    @if (get-font-size(7, desktop) != get-font-size(7, mobile)) {
+      @include media('>medium') {
+        @include font-size(7, desktop, true, false, true);
+      }
+    }
+    @include font-weight(bold);
+    line-height: 16px;
+    text-transform: uppercase;
+    text-decoration: none;
+    background-color: color(bg, 1);
+    color: color(primary, 1) !important;
+    border: none;
+    height: auto;
+    left: 8px;
+    padding: 16px 32px;
+    top: 8px;
+    width: auto;
+    z-index: 100000;
+  }
+}

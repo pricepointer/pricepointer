@@ -23,9 +23,7 @@
     <div class="inner">
         <header>
             <h1 class="hidden-header">{% usemacro title %}</h1>
-            <a href="/">
-                {% include '_partial/logo.html' %}
-            </a>
+            <a class="logo" href="/" title="{% config 'site_name' %}">{% config 'site_name' %}</a>
         </header>
         <div class="signup-box">
             <div class="signup-box-inner">

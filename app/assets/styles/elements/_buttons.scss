@@ -3,9 +3,6 @@
 
 .button {
     display: inline-flex;
-	@if ( get-font-family(heading) != get-font-family(base) ) {
-		@include font-family(heading);
-	}
     @include font-size(7, mobile, true, false, true);
     @if ( get-font-size(7, desktop) != get-font-size(7, mobile) ) {
         @include media( '>medium' ) {

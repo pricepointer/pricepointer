@@ -1,0 +1,56 @@
+{% extends "_partial/main.html" %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+{% load constants %}
+
+{% block css %}
+    {% render_bundle 'landing' 'css' %}
+{% endblock %}
+
+{% block js %}
+    {% render_bundle 'landing' 'js' %}
+{% endblock %}
+
+{% block title %}
+    Get notified about the deals you care about
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="header">
+            <div class="header__left">
+                <a class="logo">{% config 'site_name' %}</a>
+            </div>
+            <div class="nav">
+                <a href="{% url 'signin' %}" title="Sign in">Sign in</a>
+            </div>
+        </div>
+        <div class="hero">
+            <div class="hero-bg"></div>
+            <img class="hero-image" src="{% static "images/hero.svg" %}" alt="">
+            <div class="hero-content">
+                <h2 class="heading">
+                    Get your dealhound on.
+                </h2>
+                <p>
+                    Pricepointer notifies you when your favorite products go on sale.
+                </p>
+                <button class="button">Add to Chrome -- it's free</button>
+            </div>
+        </div>
+        <section class="section">
+            <div class="section__left">
+
+            </div>
+            <div class="section__right">
+                <h2>
+                    How it works
+                </h2>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {% include '_partial/footer/footer.html' %}
+{% endblock %}

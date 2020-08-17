@@ -1,4 +1,4 @@
-# Drop Shop
+# Pricepointer
 
 A browser extension and app that will help you track product pricing and notify you to get the best deal!
 
