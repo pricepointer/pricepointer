@@ -10,3 +10,4 @@ app/static
 app/dropshop/static/dist
 
 */_dist
+sendgrid.env
