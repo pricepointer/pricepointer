@@ -16,7 +16,7 @@ const ENTRY_DIR_PATH = 'assets/entries'
 // with webpack-dev-server
 const DEVELOPMENT_SERVER = 'http://localhost:3000'
 const DJANGO_SERVER = 'http://localhost:8000'
-const isProduction = process.env.NODE_ENV === 'production'
+const isProduction = true
 
 const getProjectAbsolutePath = (p) => path.join(path.resolve(__dirname), p)
 
@@ -91,7 +91,7 @@ function buildWebpackConfig() {
         {
             loader: 'sass-loader',
             options: {
-                sourceMap: !isProduction,
+                sourceMap: true, // sourcemaps are required for resolve-url-loader
             },
         },
     ]
