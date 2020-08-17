@@ -98,13 +98,25 @@ function buildWebpackConfig() {
 
     const rules = [
         {
-            test: /\.(woff|woff2|eot|ttf|svg)(\?.*)?$/i,
+            test: /\.(woff|woff2|eot|ttf)(\?.*)?$/i,
             use: [
                 {
                     loader: 'url-loader',
                     options: {
                         limit: 100000,
                         name: 'fonts/[name].[ext]',
+                    },
+                },
+            ],
+        },
+        {
+            test: /\.(png|jpe?g|gif|bmp|webp|svg)$/,
+            use: [
+                {
+                    loader: 'url-loader',
+                    options: {
+                        limit: 100000,
+                        name: 'images/[name].[ext]',
                     },
                 },
             ],

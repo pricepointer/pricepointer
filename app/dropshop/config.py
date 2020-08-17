@@ -1,1 +1,1 @@
-site_name = 'Drop Shop'
+site_name = 'Pricepointer'

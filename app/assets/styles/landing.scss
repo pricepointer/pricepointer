@@ -1,0 +1,125 @@
+@import "theme";
+@import "./elements/button";
+
+body {
+  font-size: 14px;
+  height: 100%;
+}
+
+.hero {
+  position: relative;
+  padding-top: 100px;
+  padding-left: 60px;
+  height: 80vh;
+  min-height: 600px;
+  max-height: 800px;
+  overflow: hidden;
+
+  @media (max-width: 450px) {
+    padding-left: 30px;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding-right: 20px;
+
+    p {
+      font-size: 1.4em;
+      max-width: 400px;
+      line-height: 1.6;
+
+      @media (max-width: 500px) {
+        font-size: 1.2em;
+      }
+    }
+
+    .heading {
+      font-size: 60px;
+      font-weight: 500;
+
+      @media (max-width: 500px) {
+        font-size: 40px;
+      }
+    }
+
+    @media (min-width: 1300px) {
+      margin-left: 10%;
+    }
+  }
+}
+
+.hero-bg {
+  background: url('../../dropshop/static/images/bg.svg') no-repeat;
+  background-size: cover;
+  position: absolute;
+  right: -20vw;
+  top: -400px;
+  height: 160vh;
+  width: 70vw;
+  min-width: 1000px;
+  max-width: 1400px;
+  min-height: 1200px;
+  max-height: 1400px;
+  z-index: 0;
+
+  @media (max-width: 800px) {
+    min-width: 700px;
+  }
+}
+
+.hero-image {
+  position: absolute;
+  right: 20%;
+  bottom: 20%;
+  height: 50%;
+  max-height: 800px;
+  max-width: 600px;
+  margin-right: -10vh;
+  z-index: 0;
+
+  @media (max-width: 800px) {
+    display: none;
+  }
+}
+
+.header {
+  padding: 40px 68px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+
+  &__left {
+    flex: 1;
+  }
+
+  @media (max-width: 450px) {
+    padding: 20px 30px;
+  }
+}
+
+h2 {
+  font-size: 3em;
+  font-weight: 500;
+
+  @media (max-width: 500px) {
+    font-size: 2em;
+  }
+}
+
+.section {
+  padding: 40px 60px;
+  display: flex;
+
+  @media (max-width: 450px) {
+    padding-left: 30px;
+  }
+
+  &__left, &__right {
+    flex: 1;
+  }
+}

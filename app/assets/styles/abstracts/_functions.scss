@@ -24,7 +24,7 @@
 
 // --------------------------------------------------------------------
 // Retrieve Font Family -----------------------------------------------
-// Used in _mixins.scss [@mixin font-family] --------------------------
+// Used in c_mixins.scss [@mixin font-family] --------------------------
 // --------------------------------------------------------------------
 @function get-font-family($elem) {
 	@return map-get($font__family, $elem);
