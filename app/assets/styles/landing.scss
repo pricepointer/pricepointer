@@ -4,6 +4,11 @@
 body {
   font-size: 14px;
   height: 100%;
+  line-height: 0;
+}
+
+#content {
+  line-height: 1.5;
 }
 
 .hero {
@@ -97,6 +102,12 @@ body {
     flex: 1;
   }
 
+  .nav {
+    a + a {
+      margin-left: 28px;
+    }
+  }
+
   @media (max-width: 450px) {
     padding: 20px 30px;
   }
@@ -111,15 +122,70 @@ h2 {
   }
 }
 
+
+h3 {
+  font-family: $fontFamily;
+}
+
+
 .section {
   padding: 40px 60px;
   display: flex;
+  background: #ffffff;
+  overflow: hidden;
+  position: relative;
 
   @media (max-width: 450px) {
     padding-left: 30px;
   }
 
-  &__left, &__right {
+  > div {
     flex: 1;
+  }
+
+  &__left {
+    text-align: right;
+  }
+
+  &.how {
+    padding-top: 70px;
+    padding-bottom: 70px;
+  }
+
+  &.cta {
+    background: none;
+    text-align: center;
+  }
+}
+
+.how {
+  &__step {
+    p {
+      max-width: 400px;
+    }
+  }
+}
+
+.demo-image {
+  width: 60%;
+  max-width: 500px;
+  min-width: 300px;
+  margin-right: 5%;
+  position: absolute;
+  bottom: 0;
+  right: 50vw;
+}
+
+.demo-bg {
+  background: url('../../dropshop/static/images/demo-bg.svg') no-repeat;
+  background-size: cover;
+  position: absolute;
+  right: 50vw;
+  top: -600px;
+  height: 1500px;
+  width: 1500px;
+
+  @media (max-width: 800px) {
+    min-width: 700px;
   }
 }

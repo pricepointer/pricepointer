@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "app": "NODE_ENV=development webpack --config app/webpack.config.js --mode=development --progress --colors",
+    "app": "NODE_ENV=development webpack --config app/webpack.config.js --mode=development --watch --progress --colors",
     "app-build": "NODE_ENV=production webpack --config app/webpack.config.js --mode=production --progress --colors",
     "extension": "NODE_ENV=development webpack --config extension/webpack.config.js --mode=development --watch --progress --colors",
     "extension-build": "NODE_ENV=production webpack --config extension/webpack.config.js --mode=production --progress --colors -p",
