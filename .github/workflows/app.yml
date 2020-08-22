@@ -83,7 +83,7 @@ jobs:
           cd ${{ secrets.PROJECT_DIR }}
           source venv/bin/activate
           git pull
-          pip install -r ../requirements.txt
+          pip install -r requirements.txt
           ./app/manage.py collectstatic --noinput
           ./app/manage.py migrate --noinput
           sudo systemctl restart gunicorn
