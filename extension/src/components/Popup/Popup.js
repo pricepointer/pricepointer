@@ -6,6 +6,9 @@ import {
 import CurrentTracks from './CurrentTracks'
 import SignIn from './SignIn'
 
+// eslint-disable-next-line no-unused-vars
+let themeColor = 'Light'
+
 const max = '100%'
 const styles = {
     button: {
@@ -35,17 +38,22 @@ const styles = {
         flexDirection: 'column',
     },
 
+    settingsContainer: {
+        width: 250,
+        border: '3 #ffffff',
+        display: 'flex',
+        flexDirection: 'column',
+        height: 200,
+    },
+
     closeButton: {
         width: '22px',
         fontSize: '24px',
         fontWeight: 400,
         lineHeight: 0,
-        float: 'right',
         border: 'none',
         outline: 'none',
         color: '#ffffff',
-        position: 'absolute',
-        top: 0,
         right: 0,
     },
 
@@ -59,6 +67,8 @@ const styles = {
 
     titleCard: {
         margin: '-5px 10px 10px',
+        display: 'flex',
+        justifyContent: 'space-between',
     },
 }
 
@@ -69,6 +79,7 @@ class Popup extends PureComponent {
         this.state = {
             user: null,
             isLoading: true,
+            account: false,
         }
     }
 
@@ -126,13 +137,30 @@ class Popup extends PureComponent {
         })
     }
 
+    handleThemeChange = (event) => {
+        themeColor = event
+    }
+
     handleClose = () => {
         window.close()
     }
 
+    handleAccount = () => {
+        const { account } = this.state
+        if (account === false) {
+            this.setState({
+                account: true,
+            })
+        } else {
+            this.setState({
+                account: false,
+            })
+        }
+    }
+
     render() {
         const { classes } = this.props
-        const { user, isLoading } = this.state
+        const { user, isLoading, account } = this.state
 
         if (isLoading) {
             return null
@@ -145,43 +173,106 @@ class Popup extends PureComponent {
                         ? <SignIn handleLogin={this.handleLogin} handleSignup={this.handleSignup} />
                         : (
 
-                            <div className={classes.outerContainer}>
-                                <div
-                                    style={{
-                                        backgroundColor: '#FFC85E',
-                                        height: '50px',
-                                    }}
-                                >
-                                    <div className={classes.titleCard}>
-                                        <h1
+                            !account
+                                ? (
+                                    <div className={classes.outerContainer}>
+                                        <div
                                             style={{
-                                                color: '#ffffff',
-                                                textAlign: 'center',
+                                                backgroundColor: '#FFC85E',
+                                                height: '50px',
                                             }}
                                         >
-                                            Price Point
-                                        </h1>
-                                        <p
-                                            className={classes.closeButton}
-                                            onClick={this.handleClose}
-                                        >
-                                            x
-                                        </p>
+                                            <div className={classes.titleCard}>
+                                                <div>
+                                                    <p onClick={this.handleAccount}> o </p>
+                                                </div>
+                                                <h1
+                                                    style={{
+                                                        color: '#ffffff',
+                                                        textAlign: 'center',
+                                                    }}
+                                                >
+                                                    Price Point
+                                                </h1>
+                                                <p
+                                                    className={classes.closeButton}
+                                                    onClick={this.handleClose}
+                                                >
+                                                    x
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className={classes.watchList}>
+                                            <CurrentTracks user={user} />
+                                        </div>
+                                        <div className={classes.container}>
+                                            <button
+                                                className={classes.button}
+                                                type="button"
+                                                onClick={this.handleClick}
+                                            >
+                                                Select price
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className={classes.watchList}>
-                                    <CurrentTracks user={user} />
-                                </div>
-                                <div className={classes.container}>
-                                    <button
-                                        className={classes.button}
-                                        type="button"
-                                        onClick={this.handleClick}
-                                    >
-                                        Select price
-                                    </button>
-                                </div>
-                            </div>
+                                )
+                                : (
+                                    <div className={classes.settingsContainer}>
+                                        <div
+                                            style={{
+                                                backgroundColor: '#FFC85E',
+                                                height: '50px',
+                                            }}
+                                        >
+                                            <div className={classes.titleCard}>
+                                                <div>
+                                                    <p onClick={this.handleAccount}> o </p>
+                                                </div>
+                                                <h1
+                                                    style={{
+                                                        color: '#ffffff',
+                                                        textAlign: 'center',
+                                                    }}
+                                                >
+                                                    Price Point
+                                                </h1>
+                                                <p
+                                                    className={classes.closeButton}
+                                                    onClick={this.handleClose}
+                                                >
+                                                    x
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className={classes.container}>
+                                            <div> Theme</div>
+                                            <input
+                                                list="theme"
+                                                name="theme"
+                                            />
+                                            <datalist id="theme" onChange={this.handleThemeChange}>
+                                                <option value="Light" />
+                                                <option value="Dark" />
+                                            </datalist>
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                margin: '15px 15px 15px',
+                                            }}
+                                        >
+                                            <button
+                                                className={classes.button}
+                                                onClick={this.handleLogout}
+                                                type="button"
+                                            >
+                                                Logout
+                                            </button>
+                                        </div>
+                                    </div>
+                                )
                         )
                 }
             </div>

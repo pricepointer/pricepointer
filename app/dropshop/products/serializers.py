@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from .models import Price, Product
+from .models import Product
 from ..accounts.models import User
 
 
@@ -20,14 +20,6 @@ class ProductSerializer(ModelSerializer):
         if not price_object:
             return None
         return price_object.price
-
-
-class PriceSerializer(ModelSerializer):
-    class Meta:
-        model = Price
-        fields = (
-            'user', 'date', 'price', 'error', 'html'
-        )
 
 
 class UserSerializer(ModelSerializer):

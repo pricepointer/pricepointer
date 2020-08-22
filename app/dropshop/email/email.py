@@ -2,6 +2,7 @@ import os
 
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+
 # from_address we pass to our Mail object, edit with your name
 FROM_EMAIL = 'andrew@pricepointer.co'
 
@@ -19,7 +20,7 @@ def send_email(sendemail, name, item, price, html):
                                                                                                      price) +
                      '<a href=''%s''>Click here to view now!</a></strong>'.format(html))
     try:
-        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY '))
         response = sg.send(message)
         code, body, headers = response.status_code, response.body, response.headers
         print(f"Response Code: {code} ")
@@ -29,3 +30,9 @@ def send_email(sendemail, name, item, price, html):
     except Exception as e:
         print("Error: {0}".format(e))
     return str(response.status_code)
+
+
+send_email("lee.wing.andrew@gmail.com", "kev", "item", "price",
+           "https://www.google.com/search?q=importing+in+python&rlz=1C5CHFA_enUS868US869&sxsrf"
+           "=ALeKk018mYCKLpCC51FZlUbtFidK1Gmv-w:1597876764896&source=lnms&tbm=isch&sa=X&ved"
+           "=2ahUKEwiloN3nqqjrAhVUJ80KHa-LCaUQ_AUoAXoECA4QAw&biw=1440&bih=747")

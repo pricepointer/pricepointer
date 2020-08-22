@@ -210,6 +210,7 @@ function buildWebpackConfig() {
                 ['@babel/plugin-proposal-class-properties', { 'loose': false }],
                 '@babel/plugin-proposal-json-strings',
                 'wildcard',
+                '@babel/plugin-transform-react-jsx',
             ],
         },
     }

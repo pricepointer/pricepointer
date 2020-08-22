@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.urls import include, path
 
-from . import models
 from . import api, views
 from .accounts.urls import urlpatterns as accounts_urls
 

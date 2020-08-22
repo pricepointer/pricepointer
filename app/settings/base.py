@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'webpack_loader',
+    "post_office",
     ROOT_APP,
 ]
 
@@ -161,3 +162,6 @@ WEBPACK_LOADER = {
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
     }
 }
+
+# Emails
+EMAIL_BACKEND = 'post_office.EmailBackend'

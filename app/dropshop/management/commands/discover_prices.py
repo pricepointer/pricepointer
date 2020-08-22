@@ -11,7 +11,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for product in Product.objects.all():
             price = search_for_price(product.website, product.price_path)
-            if price is None:
-                create_price(0, True, product.website, product)
-            else:
-                create_price(price, False, product.website, product)
+            create_price(price, product.website, product)
