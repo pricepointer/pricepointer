@@ -76,7 +76,7 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          cd ${{ secrets.PROJECT_DIR }
+          cd ${{ secrets.PROJECT_DIR }}
           source venv/bin/activate
           pip install -r ../requirements.txt
           ./app/manage.py collectstatic
