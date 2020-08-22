@@ -51,7 +51,7 @@ jobs:
         
     - name: Display structure of downloaded files
       run: ls -R
-          
+
     - name: Copy assets
       uses: appleboy/scp-action@master
       with:
@@ -83,6 +83,6 @@ jobs:
           cd ${{ secrets.PROJECT_DIR }}
           source venv/bin/activate
           pip install -r ../requirements.txt
-          ./app/manage.py collectstatic
-          ./app/manage.py migrate
+          ./app/manage.py collectstatic --noinput
+          ./app/manage.py migrate --noinput
           sudo systemctl restart gunicorn
