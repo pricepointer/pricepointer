@@ -1,0 +1,84 @@
+name: Deploy App
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-assets:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Runs a single command using the runners shell
+    - name: Setup node
+      uses: actions/setup-node@v1.4.3
+      
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+      
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Build app assets
+      run: npm run app-build
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: assets
+        path: |
+          app/dropshop/static/dist
+          app/webpack-stats.json
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download assets
+      uses: actions/download-artifact@v2
+      with:
+        name: assets
+          
+    - name: Copy assets
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        port: ${{ secrets.PORT }}
+        key: ${{ secrets.KEY }}
+        source: "app/dropshop/static/dist"
+        target: "${{ secrets.PROJECT_DIR }}/app/dropshop/static"
+        
+    - name: Copy webpack stats
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        port: ${{ secrets.PORT }}
+        key: ${{ secrets.KEY }}
+        source: "app/webpack-stats.json"
+        target: "${{ secrets.PROJECT_DIR }}/app"
+        
+    - name: Update and restart app
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd ${{ secrets.PROJECT_DIR }
+          source venv/bin/activate
+          pip install -r ../requirements.txt
+          ./app/manage.py collectstatic
+          ./app/manage.py migrate
+          sudo systemctl restart gunicorn
