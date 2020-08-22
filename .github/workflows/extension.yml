@@ -29,14 +29,9 @@ jobs:
             
     - name: Build extension
       run: npm run extension-build
-      
-    - name: Create zipped extension
-      uses: montudor/action-zip@v0.1.0
-      with:
-        args: zip -qq -r extension/pricepointer.zip extension/_dist
 
     - name: Create extension artifact
       uses: actions/upload-artifact@v2
       with:
         name: extension
-        path: extension/pricepointer.zip
+        path: extension/_dist
