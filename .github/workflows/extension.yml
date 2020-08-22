@@ -35,12 +35,8 @@ jobs:
       with:
         args: zip -qq -r extension/pricepointer.zip extension/_dist
 
-    - uses: actions/upload-artifact@v2
+    - name: Create extension artifact
+      uses: actions/upload-artifact@v2
       with:
         name: extension
         path: extension/pricepointer.zip
-        
-    - uses: actions/upload-artifact@v2
-      with:
-        name: extension-unpacked
-        path: extension/_dist
