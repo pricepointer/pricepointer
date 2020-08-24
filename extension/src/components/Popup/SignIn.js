@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
+import 'font-awesome/scss/font-awesome.scss'
 
 const styles = {
     container: {
@@ -11,26 +12,14 @@ const styles = {
         flexDirection: 'column',
     },
     titleCard: {
-        margin: '-5px 10px 10px',
-    },
-
-    closeButton: {
-        width: '22px',
-        fontSize: '24px',
-        fontWeight: 400,
-        lineHeight: 0,
-        float: 'right',
-        border: 'none',
-        outline: 'none',
-        color: '#ffffff',
-        position: 'absolute',
-        top: 0,
-        right: 0,
+        margin: '0px 10px 10px',
+        display: 'flex',
+        justifyContent: 'space-between',
     },
 
     button: {
         outline: 'none',
-        backgroundColor: '#FEA127',
+        backgroundColor: '#00C6E8',
         color: '#FFFFFF',
         width: 90,
         height: 40,
@@ -122,33 +111,41 @@ class SignIn extends PureComponent {
         const { classes } = this.props
         return (
             <div className={classes.container}>
-                <div style={{
-                    backgroundColor: '#FFC85E',
-                    height: '50px',
-                }}
+                <div
+                    style={{
+                        backgroundColor: '#b8d3ff',
+                        height: '50px',
+                    }}
                 >
                     <div className={classes.titleCard}>
+                        <div />
                         <h1
                             style={{
-                                color: '#ffffff',
+                                color: '#1a1844',
                                 textAlign: 'center',
+                                fontFamily: 'recoleta',
                             }}
                         >
-                            Price Point
+                            pricepointer
                         </h1>
-                        <p
-                            className={classes.closeButton}
+                        <i
+                            className="fa fa-times"
+                            aria-hidden="true"
                             onClick={this.handleClose}
-                        >
-                            x
-                        </p>
+                            style={{
+                                color: '#1a1844',
+                                fontSize: '15px',
+                                paddingTop: '15px',
+                                textAlign: 'right',
+                            }}
+                        />
                     </div>
                 </div>
                 {
                     showSignUp
                         ? (
 
-                    // Sign up page
+                            // Sign up page
                             <div>
                                 <div style={{ margin: '40px 15px 40px' }}>
                                     <div className={classes.inputCard}>

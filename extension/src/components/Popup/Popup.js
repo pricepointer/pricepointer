@@ -3,8 +3,11 @@ import withStyles from 'react-jss'
 import {
     getProfile, login, logout, signup,
 } from '../../common/api'
+import Header from '../Header'
 import CurrentTracks from './CurrentTracks'
 import SignIn from './SignIn'
+import 'font-awesome/scss/font-awesome.scss'
+
 
 // eslint-disable-next-line no-unused-vars
 let themeColor = 'Light'
@@ -13,7 +16,7 @@ const max = '100%'
 const styles = {
     button: {
         outline: 'none',
-        backgroundColor: '#FEA127',
+        backgroundColor: '#00C6E8',
         color: '#FFFFFF',
         width: 140,
         height: 50,
@@ -44,31 +47,6 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         height: 200,
-    },
-
-    closeButton: {
-        width: '22px',
-        fontSize: '24px',
-        fontWeight: 400,
-        lineHeight: 0,
-        border: 'none',
-        outline: 'none',
-        color: '#ffffff',
-        right: 0,
-    },
-
-    watchList: {
-        justifyContent: 'center',
-        alignContent: 'center',
-        margin: '30px 10px 10px',
-        height: '170px',
-        overflowY: 'auto',
-    },
-
-    titleCard: {
-        margin: '-5px 10px 10px',
-        display: 'flex',
-        justifyContent: 'space-between',
     },
 }
 
@@ -104,9 +82,8 @@ class Popup extends PureComponent {
             currentWindow: true,
         }, (tabs) => {
             chrome.tabs.sendMessage(tabs[0].id, { toggleSelectPrice: true })
+            window.close()
         })
-
-        window.close()
     }
 
     handleSignup = (accountData) => {
@@ -176,35 +153,13 @@ class Popup extends PureComponent {
                             !account
                                 ? (
                                     <div className={classes.outerContainer}>
-                                        <div
-                                            style={{
-                                                backgroundColor: '#FFC85E',
-                                                height: '50px',
-                                            }}
-                                        >
-                                            <div className={classes.titleCard}>
-                                                <div>
-                                                    <p onClick={this.handleAccount}> o </p>
-                                                </div>
-                                                <h1
-                                                    style={{
-                                                        color: '#ffffff',
-                                                        textAlign: 'center',
-                                                    }}
-                                                >
-                                                    Price Point
-                                                </h1>
-                                                <p
-                                                    className={classes.closeButton}
-                                                    onClick={this.handleClose}
-                                                >
-                                                    x
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className={classes.watchList}>
-                                            <CurrentTracks user={user} />
-                                        </div>
+                                        <Header
+                                            handleClose={this.handleClose}
+                                            icon="cog"
+                                            iconHandler={this.handleAccount}
+                                            iconTitle="Account settings"
+                                        />
+                                        <CurrentTracks user={user} />
                                         <div className={classes.container}>
                                             <button
                                                 className={classes.button}
@@ -218,33 +173,12 @@ class Popup extends PureComponent {
                                 )
                                 : (
                                     <div className={classes.settingsContainer}>
-                                        <div
-                                            style={{
-                                                backgroundColor: '#FFC85E',
-                                                height: '50px',
-                                            }}
-                                        >
-                                            <div className={classes.titleCard}>
-                                                <div>
-                                                    <p onClick={this.handleAccount}> o </p>
-                                                </div>
-                                                <h1
-                                                    style={{
-                                                        color: '#ffffff',
-                                                        textAlign: 'center',
-                                                    }}
-                                                >
-                                                    Price Point
-                                                </h1>
-                                                <p
-                                                    className={classes.closeButton}
-                                                    onClick={this.handleClose}
-                                                >
-                                                    x
-                                                </p>
-                                            </div>
-                                        </div>
-
+                                        <Header
+                                            handleClose={this.handleClose}
+                                            icon="arrow-left"
+                                            iconHandler={this.handleAccount}
+                                            iconTitle="Back"
+                                        />
                                         <div className={classes.container}>
                                             <div> Theme</div>
                                             <input

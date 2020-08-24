@@ -15,7 +15,7 @@ const icons = {
     128: 'images/get_started128.png',
 }
 
-module.exports = (chunks) => {
+module.exports = (chunks, assets) => {
     const manifest = {
         ...baseManifest,
         icons,
@@ -32,11 +32,19 @@ module.exports = (chunks) => {
     }
 
     manifest.options_page = 'options.html'
+
+    const content = Array.from(assets).find(asset => /content\..+\.js$/.test(asset))
+    const contentCss = Array.from(assets).find(asset => /content\..+\.css$/.test(asset))
     manifest.content_scripts = [
         {
             matches: ['http://*/*', 'https://*/*'],
-            js: [chunks.content],
+            js: [content],
+            css: [contentCss],
         },
+    ]
+
+    manifest.web_accessible_resources = [
+        'images/*',
     ]
 
     return manifest

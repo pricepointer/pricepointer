@@ -140,6 +140,13 @@ export function post(url, data, options = {}) {
     }))
 }
 
+export function deleteProduct(url, data, options = {}) {
+    return handleFetch(request('DELETE', url, {
+        ...options,
+        body: JSON.stringify(data),
+    }))
+}
+
 export function noTokenPost(url, data, options = {}) {
     return fetch(`${baseUrl}${url}`, {
         headers: { 'Content-Type': `application/json` },

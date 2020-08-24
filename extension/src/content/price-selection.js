@@ -14,8 +14,8 @@ let hoveredElement = null
 const styles = {
     highlighted: {
         position: 'fixed',
-        background: 'rgba(254, 161, 39,0.20) !important',
-        border: '1px solid #ffc85e !important',
+        background: 'rgba(0,198,232,0.20) !important',
+        border: '1px solid #00c6e8 !important',
         zIndex: 999999999999,
         pointerEvents: 'none',
     },
@@ -138,8 +138,38 @@ function renderPopup(element) {
         </React.StrictMode>,
         wrapper,
     )
-
     createPopper(element, wrapper)
+    wrapper.style.zIndex = 10000000000
+}
+
+function renderError(element) {
+    const wrapper = document.createElement('div')
+    document.body.appendChild(wrapper)
+
+    function closePopup() {
+        document.body.removeChild(wrapper)
+    }
+
+    ReactDOM.render(
+        <React.StrictMode>
+            <div
+                style={{
+                    color: '#b60000',
+                    backgroundColor: '#ffffff',
+                    zIndex: '99999',
+                    fontSize: '10px',
+                }}
+            >
+                Error: please select the price of the item you would like to track
+            </div>
+        </React.StrictMode>,
+        wrapper,
+    )
+    createPopper(element, wrapper, {
+        placement: 'top',
+    })
+    wrapper.style.zIndex = 10000000000
+    setTimeout(closePopup, 5000)
 }
 
 function handlePriceClick(event) {
@@ -150,12 +180,13 @@ function handlePriceClick(event) {
     if (isPrice.includes('$') || isPrice.includes('£') || isPrice.includes('€') || isPrice.includes('¥')
         || isPrice.includes('₾')) {
         renderPopup(event.target)
+    } else {
+        renderError(event.target)
     }
 
     event.preventDefault()
     event.stopPropagation()
 }
-
 
 function handlePriceMouseOver(event) {
     hoveredElement = event.target

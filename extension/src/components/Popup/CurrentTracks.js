@@ -17,7 +17,13 @@ const styles = {
         display: 'inline-block',
         color: TEXT_COLOR,
     },
-
+    watchList: {
+        justifyContent: 'center',
+        alignContent: 'center',
+        margin: '20px 10px 10px',
+        height: '170px',
+        overflowY: 'auto',
+    },
 }
 
 class CurrentTracks extends PureComponent {
@@ -34,6 +40,7 @@ class CurrentTracks extends PureComponent {
 
         this.state = {
             products: [],
+            showDelete: false,
         }
     }
 
@@ -57,31 +64,74 @@ class CurrentTracks extends PureComponent {
             )
     }
 
+    handleShowDelete = () => {
+        const { showDelete } = this.state
+        if (showDelete === true) {
+            this.setState({
+                showDelete: false,
+            })
+        } else {
+            this.setState({
+                showDelete: !showDelete,
+            })
+        }
+    }
+
+    handleDelete = () => {
+    }
 
     render() {
         const { classes } = this.props
-        const { products } = this.state
+        const { products, showDelete } = this.state
 
         return (
-            <div>
-                {
-                    products.map(product => (
-                        <div className={classes.item} key={product.id}>
-                            <a
-                                style={{ flex: 1, color: TEXT_COLOR, textDecoration: 'none' }}
-                                href={product.website}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
+            <div style={{ margin: '10px 0px 0px' }}>
+                <i
+                    className="fa fa-trash"
+                    aria-hidden="true"
+                    style={{
+                        position: 'fixed',
+                        padding: '10px 230px 10px',
+                    }}
+                    onClick={this.handleShowDelete}
+                />
+                <div className={classes.watchList}>
+                    {
+                        products.map(product => (
+                            <div className={classes.item} key={product.id}>
+                                <a
+                                    style={{
+                                        flex: 1,
+                                        color: TEXT_COLOR,
+                                        textDecoration: 'none',
+                                        fontFamily: 'basier',
+                                        fontSize: '14px',
+                                    }}
+                                    href={product.website}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
 
-                                {product.name}
-                            </a>
-                            <div className={classes.price}>
-                                {product.price}
+                                    {product.name}
+                                </a>
+                                <div className={classes.price}>
+                                    {product.price}
+                                    {showDelete && (
+                                        <i
+                                            className="fa fa-times"
+                                            aria-hidden="true"
+                                            style={{
+                                                color: '#b60000',
+                                                margin: '0px 5px',
+                                            }}
+                                            onClick={this.handleDelete}
+                                        />
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))
-                }
+                        ))
+                    }
+                </div>
             </div>
         )
     }
