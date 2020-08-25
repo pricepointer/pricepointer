@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 
 from dropshop.email.sendmail import send_mail
-from dropshop.products.business import create_price
 from dropshop.products.models import Product
 from dropshop.scraper.webscraper import search_for_price
 from .models import Price

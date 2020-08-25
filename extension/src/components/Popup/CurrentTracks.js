@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
-import { get } from '../../common/api'
+import { del, get } from '../../common/api'
 
-const productUrl = 'products/'
+const productsUrl = 'products/'
 const TEXT_COLOR = '#515151'
 const styles = {
     item: {
@@ -47,7 +47,7 @@ class CurrentTracks extends PureComponent {
 
     componentDidMount() {
         const { user } = this.props
-        get(productUrl)
+        get(productsUrl)
             .then(
                 (result) => {
                     this.setState({
@@ -77,7 +77,14 @@ class CurrentTracks extends PureComponent {
         }
     }
 
-    handleDelete = () => {
+    handleDelete = (product) => {
+        del(`${productsUrl}${product.id}`)
+            .then(() => {
+                console.log('Success')
+            })
+            .catch((error) => {
+                console.error('Error', error)
+            })
     }
 
     render() {
@@ -92,6 +99,7 @@ class CurrentTracks extends PureComponent {
                     style={{
                         position: 'fixed',
                         padding: '10px 230px 10px',
+                        cursor: 'pointer',
                     }}
                     onClick={this.handleShowDelete}
                 />
@@ -115,7 +123,8 @@ class CurrentTracks extends PureComponent {
                                     {product.name}
                                 </a>
                                 <div className={classes.price}>
-                                    {product.price}
+                                    {!product.price && (<div>Loading</div>)}
+                                    {!!product.price && (product.price)}
                                     {showDelete && (
                                         <i
                                             className="fa fa-times"
@@ -123,8 +132,11 @@ class CurrentTracks extends PureComponent {
                                             style={{
                                                 color: '#b60000',
                                                 margin: '0px 5px',
+                                                cursor: 'pointer',
                                             }}
-                                            onClick={this.handleDelete}
+                                            onClick={() => {
+                                                this.handleDelete(product)
+                                            }}
                                         />
                                     )}
                                 </div>

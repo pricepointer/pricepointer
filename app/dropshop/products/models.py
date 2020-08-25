@@ -22,4 +22,5 @@ class Price(models.Model):
     price = models.DecimalField(max_digits=19, decimal_places=2, null=True)
     error = models.BooleanField()
     html = models.TextField()
+    # currency = models.CharField(max_length=5, default='$')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
