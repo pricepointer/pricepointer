@@ -8,12 +8,13 @@ from ..accounts.models import User
 class ProductSerializer(ModelSerializer):
     price = serializers.SerializerMethodField()
     original_price = serializers.SerializerMethodField()
+    currency = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = (
             'id', 'user', 'website', 'price_path', 'active', 'created_at', 'expires_at',
-            'notification_period', 'target_price', 'name', 'price', 'original_price'
+            'notification_period', 'target_price', 'name', 'price', 'original_price', 'currency'
         )
 
     def get_price(self, product):
@@ -27,6 +28,12 @@ class ProductSerializer(ModelSerializer):
         if not price_object:
             return None
         return price_object.price
+
+    def get_currency(self, product):
+        price_object = product.price_set.order_by('date').last()
+        if not price_object:
+            return None
+        return price_object.currency
 
 class UserSerializer(ModelSerializer):
     class Meta:

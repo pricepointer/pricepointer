@@ -26,6 +26,7 @@ const styles = {
     },
 }
 
+
 class CurrentTracks extends PureComponent {
     static propTypes = {
         user: PropTypes.shape({
@@ -44,24 +45,9 @@ class CurrentTracks extends PureComponent {
         }
     }
 
-
     componentDidMount() {
-        const { user } = this.props
-        get(productsUrl)
-            .then(
-                (result) => {
-                    this.setState({
-                        // isLoaded: true,
-                        products: result.filter(product => product.user === user.id),
-                    })
-                },
-                () => {
-                    this.setState({
-                        // isLoaded: true,
-                        // error,
-                    })
-                },
-            )
+        this.updateProducts()
+        this.updateProductForPrice()
     }
 
     handleShowDelete = () => {
@@ -78,14 +64,42 @@ class CurrentTracks extends PureComponent {
     }
 
     handleDelete = (product) => {
-        del(`${productsUrl}${product.id}`)
+        del(`${productsUrl}${product.id}/`)
             .then(() => {
                 console.log('Success')
             })
             .catch((error) => {
                 console.error('Error', error)
             })
+
+        this.updateProducts()
     }
+
+    updateProducts = () => {
+        get(productsUrl)
+            .then(
+                (result) => {
+                    this.setState({
+                        products: result,
+                    })
+                },
+                () => {
+                    this.setState({})
+                },
+            )
+    }
+
+
+    updateProductForPrice = () => {
+        const { products } = this.state
+        const update = setInterval(() => {
+            if (products.every(product => !!product.price)) {
+                clearInterval(update)
+            }
+            this.updateProducts()
+        }, 1000)
+    }
+
 
     render() {
         const { classes } = this.props
@@ -124,6 +138,8 @@ class CurrentTracks extends PureComponent {
                                 </a>
                                 <div className={classes.price}>
                                     {!product.price && (<div>Loading</div>)}
+                                    {product.price && product.price.error
+                                    && (<div style={{ color: '#b60000' }}>Error</div>)}
                                     {!!product.price && (product.price)}
                                     {showDelete && (
                                         <i

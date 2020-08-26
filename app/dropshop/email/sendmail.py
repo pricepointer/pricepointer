@@ -31,7 +31,7 @@ def send_mail(item, website, original_price, current_price, threshold_price, to_
         'threshold_price': threshold_price,
         'percent_difference': percent_difference
     }
-    template = get_template('emails/test.html')
+    template = get_template('emails/mainemail.html')
     message = template.render(context)
 
     return mail.send(

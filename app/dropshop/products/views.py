@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from dropshop.products.business import create_price
+from dropshop.products.business import create_price, get_currency, get_price
 from dropshop.scraper.webscraper import search_for_price
 from .models import Product
 from .serializers import ProductSerializer
@@ -29,8 +29,10 @@ class ProductListView(APIView):
         try:
             product = create_product(**form)
             product.save()
-            price = search_for_price(data['website'], data['price_path'])
-            create_price(price, data['website'], product)
+            cost = search_for_price(data['website'], data['price_path'])
+            price = get_price(cost)
+            currency = get_currency(cost)
+            create_price(price, data['website'], product, currency)
 
         except ValidationError as error:
             errors = {
@@ -45,7 +47,7 @@ class ProductListView(APIView):
         return Response(ProductSerializer(product).data, status=status.HTTP_201_CREATED)
 
     def get(self, request):
-        product = Product.objects.all()
+        product = Product.objects.filter(user=request.user, active=True)
         return Response(ProductSerializer(product, many=True).data)
 
 
@@ -53,5 +55,5 @@ class ProductView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def delete(self, request, product_id):
-        Product.objects.filter(id=product_id).delete()
+        Product.objects.filter(id=product_id).update(active=False)
         return Response(status=status.HTTP_204_NO_CONTENT)
