@@ -35,10 +35,11 @@ const styles = {
     },
 
     outerContainer: {
-        width: 250,
+        width: 400,
         border: '3 #ffffff',
         display: 'flex',
         flexDirection: 'column',
+        backgroundColor: '#f1f1f1',
     },
 
     settingsContainer: {

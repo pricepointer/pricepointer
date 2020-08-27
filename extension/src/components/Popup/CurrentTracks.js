@@ -2,27 +2,35 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
 import { del, get } from '../../common/api'
+import 'font-awesome/scss/font-awesome.scss'
+import ProductRow from './ProductRow'
 
 const productsUrl = 'products/'
-const TEXT_COLOR = '#515151'
 const styles = {
-    item: {
-        display: 'flex',
-        alignContent: 'flex-start',
-        margin: '5px 10px 10px',
-    },
 
-    price: {
-        textAlign: 'right',
-        display: 'inline-block',
-        color: TEXT_COLOR,
-    },
-    watchList: {
+    productList: {
         justifyContent: 'center',
         alignContent: 'center',
-        margin: '20px 10px 10px',
-        height: '170px',
+        padding: '0px 10px 10px',
+        height: '250px',
         overflowY: 'auto',
+        borderTop: '2px solid #f1f1f1',
+        backgroundColor: '#f1f1f1',
+    },
+
+    container: {
+        display: 'flex',
+    },
+
+    title: {
+        fontSize: '16px',
+        textAlign: 'center',
+        margin: '10px 7px 0px',
+        fontFamily: 'basier',
+        fontWeight: '900',
+        backgroundColor: '#ffffff',
+        padding: '20px 10px 10px',
+        borderRadius: 3,
     },
 }
 
@@ -46,8 +54,8 @@ class CurrentTracks extends PureComponent {
     }
 
     componentDidMount() {
-        this.updateProducts()
-        this.updateProductForPrice()
+        this.retrieveProductList()
+        this.pollProductsWithoutPrices()
     }
 
     handleShowDelete = () => {
@@ -72,10 +80,10 @@ class CurrentTracks extends PureComponent {
                 console.error('Error', error)
             })
 
-        this.updateProducts()
+        this.retrieveProductList()
     }
 
-    updateProducts = () => {
+    retrieveProductList = () => {
         get(productsUrl)
             .then(
                 (result) => {
@@ -90,13 +98,13 @@ class CurrentTracks extends PureComponent {
     }
 
 
-    updateProductForPrice = () => {
+    pollProductsWithoutPrices = () => {
         const { products } = this.state
         const update = setInterval(() => {
             if (products.every(product => !!product.price)) {
                 clearInterval(update)
             }
-            this.updateProducts()
+            this.retrieveProductList()
         }, 1000)
     }
 
@@ -106,57 +114,30 @@ class CurrentTracks extends PureComponent {
         const { products, showDelete } = this.state
 
         return (
-            <div style={{ margin: '10px 0px 0px' }}>
-                <i
-                    className="fa fa-trash"
-                    aria-hidden="true"
-                    style={{
-                        position: 'fixed',
-                        padding: '10px 230px 10px',
-                        cursor: 'pointer',
-                    }}
-                    onClick={this.handleShowDelete}
-                />
-                <div className={classes.watchList}>
+            <div style={{ padding: '10px 0px 0px' }}>
+
+                <div className={classes.title}>
+                    Current Products
+
+                    <i
+                        className="fa fa-trash"
+                        aria-hidden="true"
+                        style={{
+                            cursor: 'pointer',
+                            float: 'right',
+                        }}
+                        onClick={this.handleShowDelete}
+                    />
+                </div>
+                <div className={classes.productList}>
                     {
                         products.map(product => (
-                            <div className={classes.item} key={product.id}>
-                                <a
-                                    style={{
-                                        flex: 1,
-                                        color: TEXT_COLOR,
-                                        textDecoration: 'none',
-                                        fontFamily: 'basier',
-                                        fontSize: '14px',
-                                    }}
-                                    href={product.website}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
+                            <ProductRow
+                                key={product.id}
+                                product={product}
+                                showDelete={showDelete}
+                            />
 
-                                    {product.name}
-                                </a>
-                                <div className={classes.price}>
-                                    {!product.price && (<div>Loading</div>)}
-                                    {product.price && product.price.error
-                                    && (<div style={{ color: '#b60000' }}>Error</div>)}
-                                    {!!product.price && (product.price)}
-                                    {showDelete && (
-                                        <i
-                                            className="fa fa-times"
-                                            aria-hidden="true"
-                                            style={{
-                                                color: '#b60000',
-                                                margin: '0px 5px',
-                                                cursor: 'pointer',
-                                            }}
-                                            onClick={() => {
-                                                this.handleDelete(product)
-                                            }}
-                                        />
-                                    )}
-                                </div>
-                            </div>
                         ))
                     }
                 </div>
