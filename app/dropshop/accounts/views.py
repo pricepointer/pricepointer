@@ -22,8 +22,7 @@ class UsersApiView(APIView):
         }
 
         try:
-            user = create_user(**form, password=data['password'])
-            user.save()
+            user = create_user(request, **form, password=data['password'])
             login(request, user)
         except ValidationError as error:
             errors = {
@@ -67,7 +66,7 @@ class SignupView(View):
         }
 
         try:
-            user = create_user(**form, password=data.get('password'))
+            user = create_user(request, **form, password=data.get('password'))
             login(request, user)
         except ValidationError as error:
             errors = {

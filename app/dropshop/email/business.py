@@ -1,8 +1,45 @@
 import re
-from decimal import *
+from decimal import Decimal, ROUND_HALF_UP
 
 from django.template.loader import get_template
+from django.urls import reverse
 from post_office import mail
+
+
+def send_confirmation_mail(request, confirmation_email):
+    context = {
+        'activate_link': request.build_absolute_uri(
+            reverse('confirmation', kwargs={'confirmation_code': confirmation_email.confirmation_code}))
+    }
+    template = get_template('emails/confirmationemail.html')
+    message = template.render(context)
+
+    return mail.send(
+        confirmation_email.user.email,  # List of email addresses also accepted
+        'no-reply@pricepointer.co',
+        subject='Pricepointer account activation',
+        message=message,
+        html_message=message,
+        priority='now',
+    )
+
+
+def send_error_mail(item, website, to_email):
+    context = {
+        'item': item,
+        'website': website,
+    }
+    template = get_template('emails/erroremail.html')
+    message = template.render(context)
+
+    return mail.send(
+        to_email,  # List of email addresses also accepted
+        'no-reply@pricepointer.co',
+        subject=item + ' cannot be found!',
+        message=message,
+        html_message=message,
+        priority='now',
+    )
 
 
 def send_mail(item, website, original_price, current_price, threshold_price, to_email):

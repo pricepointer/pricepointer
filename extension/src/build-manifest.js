@@ -40,6 +40,7 @@ module.exports = (chunks, assets) => {
             matches: ['http://*/*', 'https://*/*'],
             js: [content],
             css: [contentCss],
+            all_frames: true,
         },
     ]
 

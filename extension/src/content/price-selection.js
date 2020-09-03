@@ -2,7 +2,6 @@ import { createPopper } from '@popperjs/core'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import buildStyles from './buildStyles'
-import Prompt from './components/Prompt'
 
 // state
 let isToggled = false
@@ -121,25 +120,43 @@ function updateHighlightBoundaries() {
     updateOverlay()
 }
 
+/* need target in order to get html path in prompt */
 function renderPopup(element) {
-    const wrapper = document.createElement('div')
-    document.body.appendChild(wrapper)
+    let iframe = document.createElement('iframe')
 
+    // const wrapper = document.createElement('div')
+    document.body.appendChild(iframe)
+
+    // eslint-disable-next-line no-unused-vars
     function closePopup() {
-        document.body.removeChild(wrapper)
+        document.body.removeChild(iframe)
     }
 
-    ReactDOM.render(
-        <React.StrictMode>
-            <Prompt
-                target={element}
-                handleClose={closePopup}
-            />
-        </React.StrictMode>,
-        wrapper,
-    )
-    createPopper(element, wrapper)
-    wrapper.style.zIndex = 10000000000
+    function populateIframe(iframe) {
+        const ifrmHtml = iframe.contentDocument.documentElement.querySelector('body')
+
+        const div = document.createElement('div')
+        ifrmHtml.appendChild(div)
+        div.innerHTML = 'hello'
+
+        // ReactDOM.render(
+        //     <Prompt
+        //
+        //         // target={element}
+        //         handleClose={closePopup}
+        //     />,
+        //     div,
+        // )
+
+        return iframe
+    }
+
+    iframe.setAttribute('id', 'prompt')
+    iframe.setAttribute('src', 'about:blank')
+
+    iframe = populateIframe(iframe)
+    createPopper(element, iframe)
+    iframe.style.zIndex = 10000000000
 }
 
 function renderError(element) {

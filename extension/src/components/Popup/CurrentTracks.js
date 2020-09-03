@@ -24,13 +24,23 @@ const styles = {
 
     title: {
         fontSize: '16px',
-        textAlign: 'center',
-        margin: '10px 7px 0px',
+        marginTop: '10px',
+        marginRight: '7px',
+        marginLeft: '10px',
         fontFamily: 'basier',
         fontWeight: '900',
         backgroundColor: '#ffffff',
-        padding: '20px 10px 10px',
+        padding: '5px 10px 0px',
         borderRadius: 3,
+    },
+
+    input: {
+        width: '90%',
+        margin: '5px',
+        outline: 'none',
+        border: 'none',
+        color: '#757575',
+        height: '25px',
     },
 }
 
@@ -49,7 +59,7 @@ class CurrentTracks extends PureComponent {
 
         this.state = {
             products: [],
-            showDelete: false,
+            inputValue: '',
         }
     }
 
@@ -108,38 +118,50 @@ class CurrentTracks extends PureComponent {
         }, 1000)
     }
 
+    productFilterOnChange = (event) => {
+        console.log('change is ', event.target.value)
+        this.setState({
+            inputValue: event.target.value,
+        })
+    }
+
+    filterProducts = () => {
+        const { products, inputValue } = this.state
+        return products.filter(product => (inputValue === '' || product.name.toLowerCase()
+            .includes(inputValue.toLowerCase())))
+    }
+
+    renderProducts = () => {
+        const filteredProducts = this.filterProducts()
+        return (
+            filteredProducts.map(product => (
+                <ProductRow
+                    key={product.id}
+                    product={product}
+                />
+            ))
+        )
+    }
 
     render() {
         const { classes } = this.props
-        const { products, showDelete } = this.state
+        const { inputValue } = this.state
 
         return (
             <div style={{ padding: '10px 0px 0px' }}>
 
                 <div className={classes.title}>
-                    Current Products
-
-                    <i
-                        className="fa fa-trash"
-                        aria-hidden="true"
-                        style={{
-                            cursor: 'pointer',
-                            float: 'right',
-                        }}
-                        onClick={this.handleShowDelete}
+                    <i className="fa fa-search" aria-hidden="true" style={{ color: '#757575' }} />
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={this.productFilterOnChange}
+                        className={classes.input}
+                        placeholder="Search products"
                     />
                 </div>
                 <div className={classes.productList}>
-                    {
-                        products.map(product => (
-                            <ProductRow
-                                key={product.id}
-                                product={product}
-                                showDelete={showDelete}
-                            />
-
-                        ))
-                    }
+                    {this.renderProducts()}
                 </div>
             </div>
         )

@@ -4,8 +4,8 @@ import {
     getProfile, login, logout, signup,
 } from '../../common/api'
 import Header from '../Header'
+import Authenticate from './Authenticate'
 import CurrentTracks from './CurrentTracks'
-import SignIn from './SignIn'
 import 'font-awesome/scss/font-awesome.scss'
 
 
@@ -59,6 +59,11 @@ class Popup extends PureComponent {
             user: null,
             isLoading: true,
             account: false,
+            emailErrorMessage: '',
+            nameErrorMessage: '',
+            passwordErrorMessage: '',
+            loginErrorMessage: '',
+            showCheckEmail: false,
         }
     }
 
@@ -89,12 +94,21 @@ class Popup extends PureComponent {
 
     handleSignup = (accountData) => {
         signup(accountData)
-            .then((user) => {
+            .then(() => {
                 this.setState({
-                    user,
+                    showCheckEmail: true,
+                })
+            })
+            .catch((errors) => {
+                this.setState({
+                    emailErrorMessage: errors.error.email,
+                    nameErrorMessage: errors.error.name,
+                    passwordErrorMessage: errors.error.password,
+                    showCheckEmail: false,
                 })
             })
     }
+
 
     handleLogin = (email, password) => {
         login({
@@ -104,6 +118,10 @@ class Popup extends PureComponent {
             .then((user) => {
                 this.setState({
                     user,
+                })
+            }, () => {
+                this.setState({
+                    loginErrorMessage: 'Username or password is incorrect',
                 })
             })
     }
@@ -138,7 +156,10 @@ class Popup extends PureComponent {
 
     render() {
         const { classes } = this.props
-        const { user, isLoading, account } = this.state
+        const {
+            user, isLoading, account, emailErrorMessage, nameErrorMessage, passwordErrorMessage, loginErrorMessage,
+            showCheckEmail,
+        } = this.state
 
         if (isLoading) {
             return null
@@ -148,7 +169,17 @@ class Popup extends PureComponent {
             <div>
                 {
                     !user
-                        ? <SignIn handleLogin={this.handleLogin} handleSignup={this.handleSignup} />
+                        ? (
+                            <Authenticate
+                                handleLogin={this.handleLogin}
+                                handleSignup={this.handleSignup}
+                                emailErrorMessage={emailErrorMessage}
+                                nameErrorMessage={nameErrorMessage}
+                                passwordErrorMessage={passwordErrorMessage}
+                                loginErrorMessage={loginErrorMessage}
+                                showCheckEmail={showCheckEmail}
+                            />
+                        )
                         : (
 
                             !account

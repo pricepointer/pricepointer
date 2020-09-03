@@ -80,7 +80,7 @@ class Prompt extends Component {
         super(props)
 
         this.state = {
-            dayTracker: 7,
+            dayTracker: '',
             priceThreshold: '',
             name: '',
             showError: false,
@@ -108,8 +108,12 @@ class Prompt extends Component {
     }
 
     handleClick = () => {
-        const { target, handleClose } = this.props
+        const {
+            target,
+            handleClose,
+        } = this.props
         const { priceThreshold, dayTracker, name } = this.state
+
         generateProduct(target, priceThreshold, dayTracker, name)
         chrome.runtime.sendMessage({
             toggleInfoEntered: true,
@@ -154,6 +158,7 @@ class Prompt extends Component {
                             id="dayTracker"
                             value={dayTracker}
                             onChange={this.handleChange}
+                            placeholder="days"
                         />
                     </div>
                     <div className={classes.inputCard}>

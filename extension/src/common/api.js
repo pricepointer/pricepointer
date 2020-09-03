@@ -122,10 +122,8 @@ export function login(credentials) {
             ])
 
             return getProfile()
-        }, () => {
-            // TODO: Handle refresh error later
-            console.error('Need to handle this error!')
-            return null
+        }, (error) => {
+            throw error.error
         })
 }
 

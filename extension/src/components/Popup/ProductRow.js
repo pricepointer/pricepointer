@@ -71,7 +71,14 @@ class ProductRow extends React.Component {
             price_difference: PropTypes.number,
             percent: PropTypes.string,
         }).isRequired,
-        showDelete: PropTypes.bool.isRequired,
+    }
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            showDelete: false,
+        }
     }
 
     getPriceColor = (product) => {
@@ -84,6 +91,19 @@ class ProductRow extends React.Component {
         }
 
         return '#929292'
+    }
+
+    handleShowDelete = () => {
+        const { showDelete } = this.state
+        if (showDelete === true) {
+            this.setState({
+                showDelete: false,
+            })
+        } else {
+            this.setState({
+                showDelete: !showDelete,
+            })
+        }
     }
 
     renderPrice() {
@@ -166,25 +186,42 @@ class ProductRow extends React.Component {
     }
 
     render() {
-        const { classes, product, showDelete } = this.props
+        const { classes, product } = this.props
+        const { showDelete } = this.state
 
         return (
             <div className={classes.container}>
                 <div className={classes.item}>
                     <div style={{ flex: 1 }}>
-                        <p className={classes.productName}>
+                        <a
+                            className={classes.productName}
+                            href={product.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             {product.name}
-                        </p>
+                        </a>
                     </div>
                     <div style={{ paddingRight: 14 }}>
                         {this.renderPrice()}
                     </div>
                     {this.renderIcon()}
+                    <i
+                        className=" fa fa-ellipsis-v"
+                        onClick={this.handleShowDelete}
+                        role="button"
+                        tabIndex={0}
+                        style={{
+                            padding: '0px 0px 25px',
+                            paddingLeft: '10px',
+                        }}
+                    />
                 </div>
                 <div className={classes.deleteButton} style={{ width: showDelete ? 50 : 0 }}>
                     <i
-                        className="fa fa-times fa-2x"
-                        aria-hidden="true"
+                        className=" fa fa-times fa-2x"
+                        role="button"
+                        tabIndex={0}
                         style={{
                             color: '#ffffff',
                             margin: '0px 5px',

@@ -1,4 +1,6 @@
+import random
 import re
+import string
 from typing import Type
 
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY, _get_backends
@@ -13,11 +15,25 @@ from django.utils.translation import LANGUAGE_SESSION_KEY, ugettext_lazy as _
 from django.views import View
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, CSRFCheck
-from django.core.validators import URLValidator
 
 from .backends import ModelBackend
 from .models import AnonymousUser, User
-from ..products.models import Product
+from ..email.business import send_confirmation_mail
+from ..email.models import ConfirmationEmail
+
+CONFIRMATION_CODE_LENGTH = 16
+
+
+def create_confirmation_email(request, user):
+    letters = string.ascii_letters
+    while True:
+        confirmation_code = ''.join(random.choice(letters) for i in range(CONFIRMATION_CODE_LENGTH))
+        if not ConfirmationEmail.objects.filter(confirmation_code=confirmation_code).exists():
+            break
+    confirmation_email = ConfirmationEmail(confirmation_code=confirmation_code, user=user)
+    confirmation_email.save()
+
+    send_confirmation_mail(request, confirmation_email)
 
 
 def authenticate(request, email, password, **kwargs):
@@ -102,32 +118,7 @@ def logout(request):
         request.user = AnonymousUser()
 
 
-def create_product(user, website, price_path, target_price, name):
-    errors = {}
-    validate = URLValidator()
-    if not (name and name.strip()):
-        errors['name'] = ValidationError(message='Name is a required field')
-    try:
-        validate(website)
-    except ValidationError:
-        errors['website'] = ValidationError(message='Website must be valid')
-    price = re.sub('[^0-9]', '', target_price)
-    if not price:
-        errors['target_price'] = ValidationError(message='target_price must be a valid integer')
-    if not (price_path and price_path.strip()):
-        errors['price_path'] = ValidationError(message='price_path must be a valid xml path')
-
-    if errors:
-        raise ValidationError(message=errors)
-
-    product = Product(user=user, website=website, price_path=price_path,
-                      target_price=target_price, name=name)
-
-    product.save()
-    return product
-
-
-def create_user(name, email, password):
+def create_user(request, name, email, password):
     errors = {}
     if not (name and name.strip()):
         errors['name'] = ValidationError(message='Name is a required field')
@@ -152,6 +143,9 @@ def create_user(name, email, password):
     )
     user.set_password(password)
     user.save()
+
+    create_confirmation_email(request, user)
+
     return user
 
 
