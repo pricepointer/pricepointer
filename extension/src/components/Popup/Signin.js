@@ -108,6 +108,7 @@ class SignIn extends PureComponent {
         this.state = {
             password: '',
             email: '',
+            showForgotPassword: false,
         }
     }
 
@@ -126,9 +127,22 @@ class SignIn extends PureComponent {
         window.close()
     }
 
+    handleShowForgotPassword = () => {
+        const { showForgotPassword } = this.state
+        if (showForgotPassword === false) {
+            this.setState({
+                showForgotPassword: true,
+            })
+        } else {
+            this.setState({
+                showForgotPassword: false,
+            })
+        }
+    }
+
     render() {
         const {
-            email, password,
+            email, password, showForgotPassword,
         } = this.state
         const {
             classes, sendToSignUp, loginErrorMessage,
@@ -139,43 +153,80 @@ class SignIn extends PureComponent {
             >
                 <div className={classes.lightBackground}>
                     <h1 className={classes.title}>Sign In</h1>
-                    <div className={classes.inputCard}>
-                        <input
-                            type="text"
-                            id="email"
-                            value={email}
-                            onChange={this.handleChange}
-                            className={classes.input}
-                            placeholder="Email"
-                        />
-                        <div className={classes.error} />
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={this.handleChange}
-                            className={!loginErrorMessage ? classes.input : classes.errorInput}
-                            placeholder="Password"
-                        />
-                    </div>
-                    <div className={classes.error}>
-                        {!!loginErrorMessage
-                        && (
-                            <div>
-                                {loginErrorMessage}
+                    {!showForgotPassword ? (
+                        <div>
+                            <div className={classes.inputCard}>
+                                <input
+                                    type="text"
+                                    id="email"
+                                    value={email}
+                                    onChange={this.handleChange}
+                                    className={classes.input}
+                                    placeholder="Email"
+                                />
+                                <div className={classes.error} />
+                                <input
+                                    type="password"
+                                    id="password"
+                                    value={password}
+                                    onChange={this.handleChange}
+                                    className={!loginErrorMessage ? classes.input : classes.errorInput}
+                                    placeholder="Password"
+                                />
                             </div>
-                        )}
-                    </div>
-                    <div className={classes.buttonCard}>
-                        <a className={classes.forgotPassword}>Forgot your password? </a>
-                        <button
-                            type="button"
-                            onClick={this.handleLogin}
-                            className={classes.button}
-                        >
-                            SIGN IN
-                        </button>
-                    </div>
+                            <div className={classes.error}>
+                                {!!loginErrorMessage
+                                && (
+                                    <div>
+                                        {loginErrorMessage}
+                                    </div>
+                                )}
+                            </div>
+                            <div className={classes.buttonCard}>
+                                <a
+                                    className={classes.forgotPassword}
+                                    onClick={this.handleShowForgotPassword}
+                                    role="button"
+                                    tabIndex={0}
+                                >
+                                    Forgot your
+                                    password?
+                                </a>
+                                <button
+                                    type="button"
+                                    onClick={this.handleLogin}
+                                    className={classes.button}
+                                >
+                                    SIGN IN
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className={classes.inputCard}>
+                            <input
+                                type="text"
+                                id="email"
+                                value={email}
+                                onChange={this.handleChange}
+                                className={classes.input}
+                                placeholder="Email"
+                            />
+                            <div className={classes.buttonCard}>
+                                <a
+                                    onClick={this.handleShowForgotPassword}
+                                    role="button"
+                                    tabIndex={0}
+                                    className={classes.forgotPassword}
+                                >
+                                    {' '}
+                                    Go back
+                                    {' '}
+                                </a>
+                                <button type="button" className={classes.button}> SUBMIT</button>
+                            </div>
+                        </div>
+                    )
+                    }
                 </div>
                 <div className={classes.darkBackground}>
                     <div className={classes.centerInfo}>

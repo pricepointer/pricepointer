@@ -19,7 +19,8 @@ from rest_framework.authentication import BaseAuthentication, CSRFCheck
 from .backends import ModelBackend
 from .models import AnonymousUser, User
 from ..email.business import send_confirmation_mail
-from ..email.models import ConfirmationEmail
+from ..email.models import ConfirmationEmail, ForgotPasswordEmail
+from ..email.business import send_forgot_password_mail
 
 CONFIRMATION_CODE_LENGTH = 16
 
@@ -44,6 +45,19 @@ def authenticate(request, email, password, **kwargs):
         raise exceptions.AuthenticationFailed(msg)
 
     return user
+
+
+def forgot_password_user_check(request, email):
+    user = User.objects.filter(email=email).first()
+    if user:
+        letters = string.ascii_letters
+        while True:
+            confirmation_code = ''.join(random.choice(letters) for i in range(CONFIRMATION_CODE_LENGTH))
+            if not ForgotPasswordEmail.objects.filter(confirmation_code=confirmation_code).exists():
+                break
+        forgot_password_email = ForgotPasswordEmail(confirmation_code=confirmation_code, user=user)
+        forgot_password_email.save()
+        send_forgot_password_mail(request, forgot_password_email)
 
 
 def login(request, user, backend=None):

@@ -6,6 +6,42 @@ from django.urls import reverse
 from post_office import mail
 
 
+def send_forgot_password_mail(request, forgot_password_email):
+    context = {
+        'website': request.build_absolute_uri(
+            reverse('forgotpassword', kwargs={'confirmation_code': forgot_password_email.confirmation_code}))
+    }
+    template = get_template('emails/forgotpasswordemail.html')
+    message = template.render(context)
+
+    return mail.send(
+        forgot_password_email.user.email,  # List of email addresses also accepted
+        'no-reply@pricepointer.co',
+        subject='Pricepointer password reset',
+        message=message,
+        html_message=message,
+        priority='now',
+    )
+
+
+def send_error_mail(item, website, to_email):
+    context = {
+        'item': item,
+        'website': website,
+    }
+    template = get_template('emails/erroremail.html')
+    message = template.render(context)
+
+    return mail.send(
+        to_email,  # List of email addresses also accepted
+        'no-reply@pricepointer.co',
+        subject=item + ' cannot be found!',
+        message=message,
+        html_message=message,
+        priority='now',
+    )
+
+
 def send_confirmation_mail(request, confirmation_email):
     context = {
         'activate_link': request.build_absolute_uri(

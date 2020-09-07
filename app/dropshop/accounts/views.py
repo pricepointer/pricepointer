@@ -6,10 +6,10 @@ from rest_framework import exceptions, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from .authentication import authenticate, create_user, login, logout, require_authentication
-from ..products.serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from .authentication import authenticate, create_user, forgot_password_user_check, login, logout, require_authentication
+from ..products.serializers import UserSerializer
 
 
 class UsersApiView(APIView):
@@ -44,6 +44,9 @@ class UserMeView(APIView):
 
     def get(self, request):
         # Already logged in, getting self details
+        if request.user.is_active is False:
+            error = {'error': 'Account not confirmed yet'}
+            return Response(error, status=status.HTTP_401_UNAUTHORIZED)
         return Response(UserSerializer(request.user).data)
 
 
@@ -114,3 +117,13 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect(reverse('index'))
+
+
+class ForgotPasswordView (APIView):
+    def post(self, request):
+        email = request.data['email']
+        forgot_password_user_check(request, email)
+
+    def get(self, request):
+
+

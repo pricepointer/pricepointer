@@ -118,6 +118,7 @@ class Popup extends PureComponent {
             .then((user) => {
                 this.setState({
                     user,
+                    account: false,
                 })
             }, () => {
                 this.setState({
@@ -211,22 +212,11 @@ class Popup extends PureComponent {
                                             iconHandler={this.handleAccount}
                                             iconTitle="Back"
                                         />
-                                        <div className={classes.container}>
-                                            <div> Theme</div>
-                                            <input
-                                                list="theme"
-                                                name="theme"
-                                            />
-                                            <datalist id="theme" onChange={this.handleThemeChange}>
-                                                <option value="Light" />
-                                                <option value="Dark" />
-                                            </datalist>
-                                        </div>
                                         <div
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'center',
-                                                margin: '15px 15px 15px',
+                                                margin: 'auto',
                                             }}
                                         >
                                             <button
