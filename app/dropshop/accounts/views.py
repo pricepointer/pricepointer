@@ -8,7 +8,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .authentication import authenticate, create_user, forgot_password_user_check, login, logout, require_authentication
+from .authentication import (
+    authenticate,
+    change_password,
+    create_user,
+    forgot_password_user_check,
+    login,
+    logout,
+    require_authentication,
+)
 from ..products.serializers import UserSerializer
 
 
@@ -119,11 +127,31 @@ class LogoutView(View):
         return redirect(reverse('index'))
 
 
-class ForgotPasswordView (APIView):
+class ForgotPasswordView(APIView):
     def post(self, request):
         email = request.data['email']
-        forgot_password_user_check(request, email)
+        try:
+            forgot_password = forgot_password_user_check(request, email)
+        except ValidationError as err:
+            error = {
+                'error': err,
+            }
+            return Response(error, status=status.HTTP_404_NOT_FOUND)
+        return Response({'email': forgot_password.user.email})
 
-    def get(self, request):
 
+class ChangePasswordView(APIView):
+    def post(self, request):
+        password = request.data['password']
+        confirmation_code = request.data['confirmationCode']
+        try:
+            change_password(password, confirmation_code)
+            return Response({
+                'response': 'success'
+            })
+        except ValidationError as err:
+            error = {
+                'error': err,
+            }
 
+            return Response(error, status=status.HTTP_404_NOT_FOUND)

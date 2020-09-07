@@ -19,8 +19,8 @@ from rest_framework.authentication import BaseAuthentication, CSRFCheck
 from .backends import ModelBackend
 from .models import AnonymousUser, User
 from ..email.business import send_confirmation_mail
-from ..email.models import ConfirmationEmail, ForgotPasswordEmail
 from ..email.business import send_forgot_password_mail
+from ..email.models import ConfirmationEmail, ForgotPasswordEmail
 
 CONFIRMATION_CODE_LENGTH = 16
 
@@ -58,6 +58,19 @@ def forgot_password_user_check(request, email):
         forgot_password_email = ForgotPasswordEmail(confirmation_code=confirmation_code, user=user)
         forgot_password_email.save()
         send_forgot_password_mail(request, forgot_password_email)
+        return forgot_password_email
+    else:
+        raise ValidationError(message="No account found")
+
+
+def change_password(password, confirmation_code):
+    forgot_password = ForgotPasswordEmail.objects.filter(confirmation_code=confirmation_code).first()
+    if forgot_password:
+        forgot_password.user.set_password(password)
+        forgot_password.user.save()
+        forgot_password.delete()
+    else:
+        raise ValidationError(message="No account found")
 
 
 def login(request, user, backend=None):

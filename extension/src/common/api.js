@@ -173,3 +173,7 @@ export function logout() {
     setAccessToken('')
     setRefreshToken('')
 }
+
+export function changePassword(data) {
+    return noTokenPost('accounts/changepassword/', data)
+}

@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import withStyles from 'react-jss'
+import { changePassword } from '../../../../extension/src/common/api'
+
 
 const styles = {
     input: {
@@ -41,6 +43,8 @@ class Reset extends React.Component {
             password: '',
             confirmPassword: '',
             noMatchError: false,
+            success: false,
+            failed: false,
         }
     }
 
@@ -60,10 +64,29 @@ class Reset extends React.Component {
         }
     }
 
-    // need to make an api that checks the confirmation code then updates user
+    changePassword = () => {
+        const { password } = this.state
+        const { confirmationCode } = this.props
+
+        changePassword({
+            password,
+            confirmationCode,
+        })
+            .then(() => {
+                this.setState({
+                    success: true,
+                })
+            }, () => {
+                this.setState({
+                    failed: true,
+                })
+            })
+    }
 
     render() {
-        const { password, confirmPassword, noMatchError } = this.state
+        const {
+            password, confirmPassword, noMatchError, success, failed,
+        } = this.state
         const { classes } = this.props
         return (
             <div>
@@ -77,7 +100,7 @@ class Reset extends React.Component {
                 />
                 <input
                     type="password"
-                    id="confirmpassword"
+                    id="confirmPassword"
                     value={confirmPassword}
                     onChange={this.handleChange}
                     className={noMatchError ? classes.errorInput : classes.input}
@@ -92,6 +115,8 @@ class Reset extends React.Component {
                     )}
                 </div>
                 <button type="button" onClick={this.handlePasswordCheck}> CHANGE PASSWORD</button>
+                {success && (<div> Password change was successful</div>)}
+                {failed && (<div> Password change failed</div>)}
             </div>
         )
     }
