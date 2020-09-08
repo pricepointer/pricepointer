@@ -1,0 +1,104 @@
+<table style="width:600px; margin: 0 auto; background-color:#f8f9fa;">
+
+    <!-- Top section of email showing price pointer and colored background -->
+    <tr style="height: 100px;">
+        <td>
+            <div style="text-align: center;">
+                <img src="https://i.imgur.com/iJvZ1cj.png" width="140" height="25">
+            </div>
+        </td>
+    </tr>
+
+    <!-- Div that will hold the main body of text -->
+    <tr style="text-align: center;">
+        <td>
+            <div style="color: #878787">
+                Woohoo! The price of
+            </div>
+
+            <div style="font-size: 40px; color: #4d5dd2;">
+                {{ item }}
+            </div>
+
+            <div style="color: #878787; margin-bottom: 20px;">
+                just dropped!
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <div style="text-align: center;">
+                <img src="https://i.imgur.com/RBKoWdk.png" width="450" height=auto>
+            </div>
+        </td>
+    </tr>
+
+    <!-- Prices -->
+    <tr>
+        <td>
+            <table style=" margin: 0 auto; border-spacing: 10px;">
+                <tr style="color: #636385">
+                    <td style="text-align: right; width: 50%;">
+                        Original price:
+                    </td>
+                    <td style="width: 50%; font-weight: 700;">
+                        {{ original_price }}
+                    </td>
+                </tr>
+                <tr style="color: #636385">
+                    <td style="text-align: right; width: 50%;">
+                        Target price:
+                    </td>
+                    <td style="width: 50%; font-weight: 700;">
+                        {{ threshold_price }}
+                    </td>
+                </tr>
+                <tr style="color: #636385; font-size: 22px">
+                    <td style="text-align: right; width: 50%; padding-top: 15px;">
+                        Current price:
+                    </td>
+                    <td style="width: 50%;  padding-top: 15px; font-weight: 900;">
+                        {{ current_price }}
+                        <div style="display: inline-block; color: #5bbd76; font-size: 15px; font-weight: 400;">
+                            <img
+                                    src="https://i.imgur.com/ER4cC8p.png"
+                                    width="10"
+                                    height=auto
+                                    style="vertical-align: middle;"
+                            >
+                            {{ percent_difference }}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <!-- Button -->
+    <tr>
+        <td>
+            <div style="text-align: center; height: 50px; padding-top: 20px;">
+                <a
+                        style="padding: 15px 55px 15px 55px; color: white; background-color: #00c6e8; border-radius: 5px; text-decoration: none;"
+                        href={{ website }}>Buy
+                    it now!</a>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="border-bottom:1px solid #878787" colspan="100%"></td>
+    </tr>
+
+    <!-- end section that will hold various information that is not as important -->
+    <tr>
+        <td style="display: inline; color: #878787;">
+            <div style="font-size: 8px; text-align: center;">
+                Copyright @ Pricepointer
+                <br/>
+                No longer wish to recieve emails from Pricepointer?
+                <a href="https:www.pricepointer.co">unsubscribe</a>.
+            </div>
+        </td>
+    </tr>
+</table>

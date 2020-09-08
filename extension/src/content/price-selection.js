@@ -2,7 +2,7 @@ import { createPopper } from '@popperjs/core'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import buildStyles from './buildStyles'
-import Prompt from './components/Prompt'
+import ContentFrame from './components/ContentFrame'
 
 // state
 let isToggled = false
@@ -14,8 +14,8 @@ let hoveredElement = null
 const styles = {
     highlighted: {
         position: 'fixed',
-        background: 'rgba(254, 161, 39,0.20) !important',
-        border: '1px solid #ffc85e !important',
+        background: 'rgba(0,198,232,0.20) !important',
+        border: '1px solid #00c6e8 !important',
         zIndex: 999999999999,
         pointerEvents: 'none',
     },
@@ -121,7 +121,37 @@ function updateHighlightBoundaries() {
     updateOverlay()
 }
 
+/* need target in order to get html path in prompt */
 function renderPopup(element) {
+    let iframe = null
+    const wrapper = document.createElement('div')
+    document.body.appendChild(wrapper)
+
+    function closePopup() {
+        document.body.removeChild(wrapper)
+    }
+
+    function handleResize(width, height) {
+        if (iframe) {
+            iframe.width = width + 2
+            iframe.height = height + 2 // account for border
+        }
+    }
+
+    ReactDOM.render(
+        <React.StrictMode>
+            <ContentFrame element={element} closePopup={closePopup} handleResize={handleResize} />
+        </React.StrictMode>,
+        wrapper,
+    )
+    iframe = wrapper.getElementsByTagName('iframe')[0]
+    iframe.style.zIndex = 10000000000
+    iframe.setAttribute('frameborder', '0')
+
+    createPopper(element, iframe)
+}
+
+function renderError(element) {
     const wrapper = document.createElement('div')
     document.body.appendChild(wrapper)
 
@@ -131,15 +161,24 @@ function renderPopup(element) {
 
     ReactDOM.render(
         <React.StrictMode>
-            <Prompt
-                target={element}
-                handleClose={closePopup}
-            />
+            <div
+                style={{
+                    color: '#b60000',
+                    backgroundColor: '#ffffff',
+                    zIndex: '99999',
+                    fontSize: '10px',
+                }}
+            >
+                Error: please select the price of the item you would like to track
+            </div>
         </React.StrictMode>,
         wrapper,
     )
-
-    createPopper(element, wrapper)
+    createPopper(element, wrapper, {
+        placement: 'top',
+    })
+    wrapper.style.zIndex = 10000000000
+    setTimeout(closePopup, 5000)
 }
 
 function handlePriceClick(event) {
@@ -150,12 +189,13 @@ function handlePriceClick(event) {
     if (isPrice.includes('$') || isPrice.includes('£') || isPrice.includes('€') || isPrice.includes('¥')
         || isPrice.includes('₾')) {
         renderPopup(event.target)
+    } else {
+        renderError(event.target)
     }
 
     event.preventDefault()
     event.stopPropagation()
 }
-
 
 function handlePriceMouseOver(event) {
     hoveredElement = event.target

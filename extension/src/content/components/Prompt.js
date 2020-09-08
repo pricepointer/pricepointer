@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
 import { post } from '../../common/api'
+import Header from '../../components/Header'
 import { getElementXPath } from '../helpers'
 
 const productsUrl = 'products/'
@@ -9,7 +10,7 @@ const styles = {
     container: {
         width: 350,
         height: 400,
-        border: '5px #ffffff',
+        border: '1px solid #b8d3ff',
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: '#ffffff',
@@ -30,7 +31,7 @@ const styles = {
 
     button: {
         outline: 'none',
-        backgroundColor: '#FEA127',
+        backgroundColor: '#00C6E8',
         color: '#FFFFFF',
         width: 140,
         height: 50,
@@ -43,21 +44,6 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
-    },
-
-    closeButton: {
-        width: '22px',
-        fontSize: '24px',
-        fontWeight: 400,
-        lineHeight: 0,
-        float: 'right',
-        border: 'none',
-        outline: 'none',
-        color: '#ffffff',
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        margin: '15px 0px 0px',
     },
 }
 
@@ -83,7 +69,7 @@ function generateProduct(target, priceThreshold, dayTracker, givenName) {
         })
 }
 
-class Prompt extends Component {
+class Prompt extends PureComponent {
     static propTypes = {
         target: PropTypes.node.isRequired,
         handleClose: PropTypes.func.isRequired,
@@ -93,7 +79,7 @@ class Prompt extends Component {
         super(props)
 
         this.state = {
-            dayTracker: 7,
+            dayTracker: '',
             priceThreshold: '',
             name: '',
             showError: false,
@@ -121,11 +107,14 @@ class Prompt extends Component {
     }
 
     handleClick = () => {
-        const { target, handleClose } = this.props
+        const {
+            target,
+            handleClose,
+        } = this.props
         const { priceThreshold, dayTracker, name } = this.state
+
         generateProduct(target, priceThreshold, dayTracker, name)
         chrome.runtime.sendMessage({
-            toggleInfoEntered: true,
             dayTracker,
             priceThreshold,
         })
@@ -140,29 +129,10 @@ class Prompt extends Component {
 
         return (
             <div className={classes.container}>
-                <div
-                    style={{
-                        backgroundColor: '#FFC85E',
-                        height: '50px',
-                    }}
-                >
-                    <div className={classes.titleCard}>
-                        <h1
-                            style={{
-                                color: '#ffffff',
-                                textAlign: 'center',
-                            }}
-                        >
-                            Price Point
-                        </h1>
-                        <p
-                            className={classes.closeButton}
-                            onClick={this.handleClose}
-                        >
-                            x
-                        </p>
-                    </div>
-                </div>
+                <Header
+                    handleClose={this.handleClose}
+                    isContent
+                />
                 <form style={{ margin: '40px 15px 40px' }}>
                     <div className={classes.inputCard}>
                         <div htmlFor="name">
@@ -186,6 +156,7 @@ class Prompt extends Component {
                             id="dayTracker"
                             value={dayTracker}
                             onChange={this.handleChange}
+                            placeholder="days"
                         />
                     </div>
                     <div className={classes.inputCard}>
@@ -202,7 +173,16 @@ class Prompt extends Component {
                     </div>
                 </form>
                 {showError && (
-                    <div style={{ color: '#b60000', textAlign: 'center' }}> Please enter a price </div>
+                    <div
+                        style={{
+                            color: '#b60000',
+                            textAlign: 'center',
+                        }}
+                    >
+                        {' '}
+                        Please enter a price
+                        {' '}
+                    </div>
                 )}
                 <div className={classes.buttonDiv}>
                     <button

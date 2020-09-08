@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block content %}
-    <div>
+    <div id="content">
         <div class="header">
             <div class="header__left">
                 <a class="logo">{% config 'site_name' %}</a>
@@ -38,14 +38,37 @@
                 <button class="button">Add to Chrome -- it's free</button>
             </div>
         </div>
-        <section class="section">
+        <section class="section how">
             <div class="section__left">
-
+                <div class="demo-bg"></div>
+                <img class="demo-image" src="{% static "images/demo.png" %}" alt="">
             </div>
             <div class="section__right">
                 <h2>
                     How it works
                 </h2>
+
+                <div class="how__step">
+                    <h3>First, this step</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                        labore et dolore magna aliqua.</p>
+                </div>
+                <div class="how__step">
+                    <h3>Now the second step</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                        labore et dolore magna aliqua.</p>
+                </div>
+                <div class="how__step">
+                    <h3>Finally the last step</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                        labore et dolore magna aliqua.</p>
+                </div>
+            </div>
+        </section>
+        <section class="section cta">
+            <div>
+                <h2>Start saving today!</h2>
+                <button class="button">Add to Chrome -- it's free</button>
             </div>
         </section>
     </div>

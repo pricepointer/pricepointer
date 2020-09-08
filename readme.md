@@ -18,5 +18,16 @@ A browser extension and app that will help you track product pricing and notify 
 
         pip install -r requirements.txt
         npm install
+        brew install redis
+
+2.  Start celery processes
+        
+        brew services start redis
+        cd app/ && celery worker -A dropshop --loglevel=info
+        
+    open a new terminal and run
+    
+        workon dropshop
+        cd app/ && celery -A dropshop beat
 
 See the `readme.md` files in each of the directories above for more details about their respective set-up steps.

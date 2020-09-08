@@ -6,10 +6,18 @@ from rest_framework import exceptions, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from .authentication import authenticate, create_user, login, logout, require_authentication
-from ..products.serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from .authentication import (
+    authenticate,
+    change_password,
+    create_user,
+    forgot_password_user_check,
+    login,
+    logout,
+    require_authentication,
+)
+from ..products.serializers import UserSerializer
 
 
 class UsersApiView(APIView):
@@ -17,13 +25,12 @@ class UsersApiView(APIView):
         data = request.data
 
         form = {
-            'name': data['name'],
-            'email': data['email']
+            'name': data.get('name'),
+            'email': data.get('email')
         }
 
         try:
-            user = create_user(**form, password=data['password'])
-            user.save()
+            user = create_user(request, **form, password=data.get('password'))
             login(request, user)
         except ValidationError as error:
             errors = {
@@ -45,6 +52,9 @@ class UserMeView(APIView):
 
     def get(self, request):
         # Already logged in, getting self details
+        if request.user.is_active is False:
+            error = {'error': 'Account not confirmed yet'}
+            return Response(error, status=status.HTTP_401_UNAUTHORIZED)
         return Response(UserSerializer(request.user).data)
 
 
@@ -67,7 +77,7 @@ class SignupView(View):
         }
 
         try:
-            user = create_user(**form, password=data.get('password'))
+            user = create_user(request, **form, password=data.get('password'))
             login(request, user)
         except ValidationError as error:
             errors = {
@@ -115,3 +125,33 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect(reverse('index'))
+
+
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        email = request.data['email']
+        try:
+            forgot_password = forgot_password_user_check(request, email)
+        except ValidationError as err:
+            error = {
+                'error': err,
+            }
+            return Response(error, status=status.HTTP_404_NOT_FOUND)
+        return Response({'email': forgot_password.user.email})
+
+
+class ChangePasswordView(APIView):
+    def post(self, request):
+        password = request.data['password']
+        confirmation_code = request.data['confirmationCode']
+        try:
+            change_password(password, confirmation_code)
+            return Response({
+                'response': 'success'
+            })
+        except ValidationError as err:
+            error = {
+                'error': err,
+            }
+
+            return Response(error, status=status.HTTP_404_NOT_FOUND)

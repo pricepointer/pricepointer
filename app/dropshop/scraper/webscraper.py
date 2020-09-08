@@ -31,7 +31,7 @@ def search_for_price(url, dompath):
             return None
 
         # Found price and print without $
-        cost = re.sub(r'[^\d\.]', '', price_found.text)
+        cost = re.sub(r'[^\d\.,$£€¥₾]', '', price_found.text)
         print(cost)
         driver.close()
         return cost

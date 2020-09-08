@@ -122,10 +122,8 @@ export function login(credentials) {
             ])
 
             return getProfile()
-        }, () => {
-            // TODO: Handle refresh error later
-            console.error('Need to handle this error!')
-            return null
+        }, (error) => {
+            throw error.error
         })
 }
 
@@ -135,6 +133,13 @@ export function get(url, options = {}) {
 
 export function post(url, data, options = {}) {
     return handleFetch(request('POST', url, {
+        ...options,
+        body: JSON.stringify(data),
+    }))
+}
+
+export function del(url, data, options = {}) {
+    return handleFetch(request('DELETE', url, {
         ...options,
         body: JSON.stringify(data),
     }))
@@ -167,4 +172,8 @@ export function noTokenPost(url, data, options = {}) {
 export function logout() {
     setAccessToken('')
     setRefreshToken('')
+}
+
+export function changePassword(data) {
+    return noTokenPost('accounts/changepassword/', data)
 }

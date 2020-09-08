@@ -1,10 +1,13 @@
+import random
 import re
+import string
 from typing import Type
 
-from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY, _get_backends
-from django.contrib.auth.signals import user_logged_out, user_logged_in
+from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY, _get_backends
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.db import transaction
 from django.middleware.csrf import rotate_token
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -12,10 +15,27 @@ from django.utils.crypto import constant_time_compare
 from django.utils.translation import LANGUAGE_SESSION_KEY, ugettext_lazy as _
 from django.views import View
 from rest_framework import exceptions
-from rest_framework.authentication import BaseAuthentication, get_authorization_header, CSRFCheck
+from rest_framework.authentication import BaseAuthentication, CSRFCheck
 
 from .backends import ModelBackend
 from .models import AnonymousUser, User
+from ..email.business import send_confirmation_mail
+from ..email.business import send_forgot_password_mail
+from ..email.models import ConfirmationEmail, ForgotPasswordEmail
+
+CONFIRMATION_CODE_LENGTH = 16
+
+
+def create_confirmation_email(request, user):
+    letters = string.ascii_letters
+    while True:
+        confirmation_code = ''.join(random.choice(letters) for i in range(CONFIRMATION_CODE_LENGTH))
+        if not ConfirmationEmail.objects.filter(confirmation_code=confirmation_code).exists():
+            break
+    confirmation_email = ConfirmationEmail(confirmation_code=confirmation_code, user=user)
+    confirmation_email.save()
+
+    send_confirmation_mail(request, confirmation_email)
 
 
 def authenticate(request, email, password, **kwargs):
@@ -26,6 +46,32 @@ def authenticate(request, email, password, **kwargs):
         raise exceptions.AuthenticationFailed(msg)
 
     return user
+
+
+def forgot_password_user_check(request, email):
+    user = User.objects.filter(email=email).first()
+    if user:
+        letters = string.ascii_letters
+        while True:
+            confirmation_code = ''.join(random.choice(letters) for i in range(CONFIRMATION_CODE_LENGTH))
+            if not ForgotPasswordEmail.objects.filter(confirmation_code=confirmation_code).exists():
+                break
+        forgot_password_email = ForgotPasswordEmail(confirmation_code=confirmation_code, user=user)
+        forgot_password_email.save()
+        send_forgot_password_mail(request, forgot_password_email)
+        return forgot_password_email
+    else:
+        raise ValidationError(message="No account found")
+
+
+def change_password(password, confirmation_code):
+    forgot_password = ForgotPasswordEmail.objects.filter(confirmation_code=confirmation_code).first()
+    if forgot_password:
+        forgot_password.user.set_password(password)
+        forgot_password.user.save()
+        forgot_password.delete()
+    else:
+        raise ValidationError(message="No account found")
 
 
 def login(request, user, backend=None):
@@ -42,8 +88,8 @@ def login(request, user, backend=None):
 
     if SESSION_KEY in request.session:
         if _get_user_session_key(request) != user.pk or (
-                session_auth_hash and
-                not constant_time_compare(request.session.get(HASH_SESSION_KEY, ''), session_auth_hash)):
+            session_auth_hash and
+            not constant_time_compare(request.session.get(HASH_SESSION_KEY, ''), session_auth_hash)):
             # To avoid reusing another user's session, create a new, empty
             # session if the existing session corresponds to a different
             # authenticated user.
@@ -100,7 +146,7 @@ def logout(request):
         request.user = AnonymousUser()
 
 
-def create_user(name, email, password):
+def create_user(request, name, email, password):
     errors = {}
     if not (name and name.strip()):
         errors['name'] = ValidationError(message='Name is a required field')
@@ -119,12 +165,16 @@ def create_user(name, email, password):
     if errors:
         raise ValidationError(message=errors)
 
-    user = User(
-        name=name,
-        email=email,
-    )
-    user.set_password(password)
-    user.save()
+    with transaction.atomic():
+        user = User(
+            name=name,
+            email=email,
+        )
+        user.set_password(password)
+        user.save()
+
+        create_confirmation_email(request, user)
+
     return user
 
 
@@ -181,6 +231,7 @@ def require_authentication(cls: Type[View]):
     :param cls:
     :return:
     """
+
     class AuthenticatedView(*cls.mro()):
         def dispatch(self, request, *args, **kwargs):
             if not bool(request.user and request.user.is_authenticated):

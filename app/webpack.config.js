@@ -16,7 +16,7 @@ const ENTRY_DIR_PATH = 'assets/entries'
 // with webpack-dev-server
 const DEVELOPMENT_SERVER = 'http://localhost:3000'
 const DJANGO_SERVER = 'http://localhost:8000'
-const isProduction = true
+const isProduction = process.env.NODE_ENV === 'production'
 
 const getProjectAbsolutePath = (p) => path.join(path.resolve(__dirname), p)
 
@@ -191,6 +191,7 @@ function buildWebpackConfig() {
                         modules: false,
                         debug: !isProduction,
                         useBuiltIns: 'usage',
+                        corejs: '3',
                     },
                 ],
                 '@babel/react',

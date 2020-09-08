@@ -7,7 +7,7 @@
     }
   }
   color: color(typography, 2i);
-  margin-top: 40px; /* Give more padding because of the footer bg */
+  margin-top: 20px;
   background: $black;
 
   a {
@@ -61,10 +61,15 @@
   }
 }
 
+.footer-links {
+  list-style: none;
+  padding: 0;
+}
+
 @include media('>600px') {
 
   .site-footer {
-    margin-top: 156px; /* Give more padding because of the footer bg */
+    margin-top: 75px;
 
     &::before {
       bottom: -35px;
@@ -95,7 +100,5 @@
   .footer-links {
     order: 1;
     margin-bottom: 0;
-    list-style: none;
-    padding: 0;
   }
 }

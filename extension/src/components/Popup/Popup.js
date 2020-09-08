@@ -1,16 +1,16 @@
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
-import {
-    getProfile, login, logout, signup,
-} from '../../common/api'
+import { getProfile, login, logout } from '../../common/api'
+import Header from '../Header'
+import Authenticate from './Authenticate/Authenticate'
 import CurrentTracks from './CurrentTracks'
-import SignIn from './SignIn'
+import 'font-awesome/scss/font-awesome.scss'
 
 const max = '100%'
 const styles = {
     button: {
         outline: 'none',
-        backgroundColor: '#FEA127',
+        backgroundColor: '#00C6E8',
         color: '#FFFFFF',
         width: 140,
         height: 50,
@@ -18,7 +18,6 @@ const styles = {
         border: 'none',
         fontSize: '18px',
     },
-
     container: {
         width: max,
         height: max,
@@ -27,38 +26,12 @@ const styles = {
         alignItems: 'center',
         display: 'flex',
     },
-
     outerContainer: {
-        width: 250,
+        width: 400,
         border: '3 #ffffff',
         display: 'flex',
         flexDirection: 'column',
-    },
-
-    closeButton: {
-        width: '22px',
-        fontSize: '24px',
-        fontWeight: 400,
-        lineHeight: 0,
-        float: 'right',
-        border: 'none',
-        outline: 'none',
-        color: '#ffffff',
-        position: 'absolute',
-        top: 0,
-        right: 0,
-    },
-
-    watchList: {
-        justifyContent: 'center',
-        alignContent: 'center',
-        margin: '30px 10px 10px',
-        height: '170px',
-        overflowY: 'auto',
-    },
-
-    titleCard: {
-        margin: '-5px 10px 10px',
+        backgroundColor: '#f1f1f1',
     },
 }
 
@@ -69,6 +42,7 @@ class Popup extends PureComponent {
         this.state = {
             user: null,
             isLoading: true,
+            loginError: '',
         }
     }
 
@@ -93,18 +67,8 @@ class Popup extends PureComponent {
             currentWindow: true,
         }, (tabs) => {
             chrome.tabs.sendMessage(tabs[0].id, { toggleSelectPrice: true })
+            window.close()
         })
-
-        window.close()
-    }
-
-    handleSignup = (accountData) => {
-        signup(accountData)
-            .then((user) => {
-                this.setState({
-                    user,
-                })
-            })
     }
 
     handleLogin = (email, password) => {
@@ -116,7 +80,17 @@ class Popup extends PureComponent {
                 this.setState({
                     user,
                 })
+            }, () => {
+                this.setState({
+                    loginError: 'Username or password is incorrect',
+                })
             })
+    }
+
+    handleClearLoginError = () => {
+        this.setState({
+            loginError: '',
+        })
     }
 
     handleLogout = () => {
@@ -132,7 +106,9 @@ class Popup extends PureComponent {
 
     render() {
         const { classes } = this.props
-        const { user, isLoading } = this.state
+        const {
+            user, isLoading, loginError,
+        } = this.state
 
         if (isLoading) {
             return null
@@ -142,36 +118,22 @@ class Popup extends PureComponent {
             <div>
                 {
                     !user
-                        ? <SignIn handleLogin={this.handleLogin} handleSignup={this.handleSignup} />
+                        ? (
+                            <Authenticate
+                                handleLogin={this.handleLogin}
+                                loginError={loginError}
+                                handleClearLoginError={this.handleClearLoginError}
+                            />
+                        )
                         : (
-
                             <div className={classes.outerContainer}>
-                                <div
-                                    style={{
-                                        backgroundColor: '#FFC85E',
-                                        height: '50px',
-                                    }}
-                                >
-                                    <div className={classes.titleCard}>
-                                        <h1
-                                            style={{
-                                                color: '#ffffff',
-                                                textAlign: 'center',
-                                            }}
-                                        >
-                                            Price Point
-                                        </h1>
-                                        <p
-                                            className={classes.closeButton}
-                                            onClick={this.handleClose}
-                                        >
-                                            x
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className={classes.watchList}>
-                                    <CurrentTracks user={user} />
-                                </div>
+                                <Header
+                                    handleClose={this.handleClose}
+                                    icon="sign-out"
+                                    iconHandler={this.handleLogout}
+                                    iconTitle="Sign out"
+                                />
+                                <CurrentTracks user={user} />
                                 <div className={classes.container}>
                                     <button
                                         className={classes.button}
@@ -188,7 +150,5 @@ class Popup extends PureComponent {
         )
     }
 }
-
-// grab all info for each item that is user id
 
 export default withStyles(styles)(Popup)

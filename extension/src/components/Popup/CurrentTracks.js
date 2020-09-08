@@ -1,24 +1,49 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
-import { get } from '../../common/api'
+import { del, get } from '../../common/api'
+import 'font-awesome/scss/font-awesome.scss'
+import ProductRow from './ProductRow'
 
-const productUrl = 'products/'
-const TEXT_COLOR = '#515151'
+const productsUrl = 'products/'
 const styles = {
-    item: {
+
+    productList: {
+        justifyContent: 'center',
+        alignContent: 'center',
+        padding: '0px 10px 10px',
+        height: '250px',
+        overflowY: 'auto',
+        borderTop: '2px solid #f1f1f1',
+        backgroundColor: '#f1f1f1',
+    },
+
+    container: {
         display: 'flex',
-        alignContent: 'flex-start',
-        margin: '5px 10px 10px',
     },
 
-    price: {
-        textAlign: 'right',
-        display: 'inline-block',
-        color: TEXT_COLOR,
+    title: {
+        fontSize: '16px',
+        marginTop: '10px',
+        marginRight: '7px',
+        marginLeft: '10px',
+        fontFamily: 'basier',
+        fontWeight: '900',
+        backgroundColor: '#ffffff',
+        padding: '5px 10px 0px',
+        borderRadius: 3,
     },
 
+    input: {
+        width: '90%',
+        margin: '5px',
+        outline: 'none',
+        border: 'none',
+        color: '#757575',
+        height: '25px',
+    },
 }
+
 
 class CurrentTracks extends PureComponent {
     static propTypes = {
@@ -34,59 +59,111 @@ class CurrentTracks extends PureComponent {
 
         this.state = {
             products: [],
+            inputValue: '',
         }
     }
 
-
     componentDidMount() {
-        const { user } = this.props
-        get(productUrl)
+        this.retrieveProductList()
+        this.pollProductsWithoutPrices()
+    }
+
+    handleShowDelete = () => {
+        const { showDelete } = this.state
+        if (showDelete === true) {
+            this.setState({
+                showDelete: false,
+            })
+        } else {
+            this.setState({
+                showDelete: !showDelete,
+            })
+        }
+    }
+
+    handleDelete = (product) => {
+        del(`${productsUrl}${product.id}/`)
+            .then(() => {
+                console.log('Success')
+            })
+            .catch((error) => {
+                console.error('Error', error)
+            })
+
+        this.retrieveProductList()
+    }
+
+    retrieveProductList = () => {
+        get(productsUrl)
             .then(
                 (result) => {
                     this.setState({
-                        // isLoaded: true,
-                        products: result.filter(product => product.user === user.id),
+                        products: result,
                     })
                 },
                 () => {
-                    this.setState({
-                        // isLoaded: true,
-                        // error,
-                    })
+                    this.setState({})
                 },
             )
     }
 
+    pollProductsWithoutPrices = () => {
+        const { products } = this.state
+        const update = setInterval(() => {
+            if (products.every(product => !!product.price)) {
+                clearInterval(update)
+            }
+            this.retrieveProductList()
+        }, 1000)
+    }
+
+    productFilterOnChange = (event) => {
+        console.log('change is ', event.target.value)
+        this.setState({
+            inputValue: event.target.value,
+        })
+    }
+
+    filterProducts = () => {
+        const { products, inputValue } = this.state
+        return products.filter(product => (inputValue === '' || product.name.toLowerCase()
+            .includes(inputValue.toLowerCase())))
+    }
+
+    renderProducts = () => {
+        const filteredProducts = this.filterProducts()
+        return (
+            filteredProducts.map(product => (
+                <ProductRow
+                    key={product.id}
+                    product={product}
+                />
+            ))
+        )
+    }
 
     render() {
         const { classes } = this.props
-        const { products } = this.state
+        const { inputValue } = this.state
 
         return (
-            <div>
-                {
-                    products.map(product => (
-                        <div className={classes.item} key={product.id}>
-                            <a
-                                style={{ flex: 1, color: TEXT_COLOR, textDecoration: 'none' }}
-                                href={product.website}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-
-                                {product.name}
-                            </a>
-                            <div className={classes.price}>
-                                {product.price}
-                            </div>
-                        </div>
-                    ))
-                }
+            <div style={{ padding: '10px 0px 0px' }}>
+                <div className={classes.title}>
+                    <i className="fa fa-search" aria-hidden="true" style={{ color: '#757575' }} />
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={this.productFilterOnChange}
+                        className={classes.input}
+                        placeholder="Search products"
+                    />
+                </div>
+                <div className={classes.productList}>
+                    {this.renderProducts()}
+                </div>
             </div>
         )
     }
 }
-
-// grab all info for each item that is user id
 
 export default withStyles(styles)(CurrentTracks)
