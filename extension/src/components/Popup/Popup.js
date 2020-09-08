@@ -1,16 +1,10 @@
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
-import {
-    getProfile, login, logout, signup,
-} from '../../common/api'
+import { getProfile, login, logout } from '../../common/api'
 import Header from '../Header'
-import Authenticate from './Authenticate'
+import Authenticate from './Authenticate/Authenticate'
 import CurrentTracks from './CurrentTracks'
 import 'font-awesome/scss/font-awesome.scss'
-
-
-// eslint-disable-next-line no-unused-vars
-let themeColor = 'Light'
 
 const max = '100%'
 const styles = {
@@ -24,7 +18,6 @@ const styles = {
         border: 'none',
         fontSize: '18px',
     },
-
     container: {
         width: max,
         height: max,
@@ -33,21 +26,12 @@ const styles = {
         alignItems: 'center',
         display: 'flex',
     },
-
     outerContainer: {
         width: 400,
         border: '3 #ffffff',
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: '#f1f1f1',
-    },
-
-    settingsContainer: {
-        width: 250,
-        border: '3 #ffffff',
-        display: 'flex',
-        flexDirection: 'column',
-        height: 200,
     },
 }
 
@@ -58,12 +42,7 @@ class Popup extends PureComponent {
         this.state = {
             user: null,
             isLoading: true,
-            account: false,
-            emailErrorMessage: '',
-            nameErrorMessage: '',
-            passwordErrorMessage: '',
-            loginErrorMessage: '',
-            showCheckEmail: false,
+            loginError: '',
         }
     }
 
@@ -92,24 +71,6 @@ class Popup extends PureComponent {
         })
     }
 
-    handleSignup = (accountData) => {
-        signup(accountData)
-            .then(() => {
-                this.setState({
-                    showCheckEmail: true,
-                })
-            })
-            .catch((errors) => {
-                this.setState({
-                    emailErrorMessage: errors.error.email,
-                    nameErrorMessage: errors.error.name,
-                    passwordErrorMessage: errors.error.password,
-                    showCheckEmail: false,
-                })
-            })
-    }
-
-
     handleLogin = (email, password) => {
         login({
             email,
@@ -118,13 +79,18 @@ class Popup extends PureComponent {
             .then((user) => {
                 this.setState({
                     user,
-                    account: false,
                 })
             }, () => {
                 this.setState({
-                    loginErrorMessage: 'Username or password is incorrect',
+                    loginError: 'Username or password is incorrect',
                 })
             })
+    }
+
+    handleClearLoginError = () => {
+        this.setState({
+            loginError: '',
+        })
     }
 
     handleLogout = () => {
@@ -134,32 +100,14 @@ class Popup extends PureComponent {
         })
     }
 
-    handleThemeChange = (event) => {
-        themeColor = event
-    }
-
     handleClose = () => {
         window.close()
-    }
-
-    handleAccount = () => {
-        const { account } = this.state
-        if (account === false) {
-            this.setState({
-                account: true,
-            })
-        } else {
-            this.setState({
-                account: false,
-            })
-        }
     }
 
     render() {
         const { classes } = this.props
         const {
-            user, isLoading, account, emailErrorMessage, nameErrorMessage, passwordErrorMessage, loginErrorMessage,
-            showCheckEmail,
+            user, isLoading, loginError,
         } = this.state
 
         if (isLoading) {
@@ -173,69 +121,34 @@ class Popup extends PureComponent {
                         ? (
                             <Authenticate
                                 handleLogin={this.handleLogin}
-                                handleSignup={this.handleSignup}
-                                emailErrorMessage={emailErrorMessage}
-                                nameErrorMessage={nameErrorMessage}
-                                passwordErrorMessage={passwordErrorMessage}
-                                loginErrorMessage={loginErrorMessage}
-                                showCheckEmail={showCheckEmail}
+                                loginError={loginError}
+                                handleClearLoginError={this.handleClearLoginError}
                             />
                         )
                         : (
-
-                            !account
-                                ? (
-                                    <div className={classes.outerContainer}>
-                                        <Header
-                                            handleClose={this.handleClose}
-                                            icon="cog"
-                                            iconHandler={this.handleAccount}
-                                            iconTitle="Account settings"
-                                        />
-                                        <CurrentTracks user={user} />
-                                        <div className={classes.container}>
-                                            <button
-                                                className={classes.button}
-                                                type="button"
-                                                onClick={this.handleClick}
-                                            >
-                                                Select price
-                                            </button>
-                                        </div>
-                                    </div>
-                                )
-                                : (
-                                    <div className={classes.settingsContainer}>
-                                        <Header
-                                            handleClose={this.handleClose}
-                                            icon="arrow-left"
-                                            iconHandler={this.handleAccount}
-                                            iconTitle="Back"
-                                        />
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                margin: 'auto',
-                                            }}
-                                        >
-                                            <button
-                                                className={classes.button}
-                                                onClick={this.handleLogout}
-                                                type="button"
-                                            >
-                                                Logout
-                                            </button>
-                                        </div>
-                                    </div>
-                                )
+                            <div className={classes.outerContainer}>
+                                <Header
+                                    handleClose={this.handleClose}
+                                    icon="sign-out"
+                                    iconHandler={this.handleLogout}
+                                    iconTitle="Sign out"
+                                />
+                                <CurrentTracks user={user} />
+                                <div className={classes.container}>
+                                    <button
+                                        className={classes.button}
+                                        type="button"
+                                        onClick={this.handleClick}
+                                    >
+                                        Select price
+                                    </button>
+                                </div>
+                            </div>
                         )
                 }
             </div>
         )
     }
 }
-
-// grab all info for each item that is user id
 
 export default withStyles(styles)(Popup)

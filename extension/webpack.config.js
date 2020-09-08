@@ -156,7 +156,8 @@ function buildWebpackConfig() {
             ],
         },
         {
-            test: /\.css$/,
+            test: /\.scss$/,
+            exclude: [/\.iframe\.scss$/],
             use: [
                 'style-loader',
                 {
@@ -165,24 +166,19 @@ function buildWebpackConfig() {
                         hmr: isDevServer,
                     },
                 },
-                {
-                    loader: 'css-loader',
-                    options: {
-                        sourceMap: !isProduction,
-                    },
-                },
+                ...sassPlugins,
             ],
         },
         {
-            test: /\.scss$/,
+            test: /\.iframe\.scss$/,
             use: [
-                'style-loader',
                 {
-                    loader: MiniCssExtractPlugin.loader,
+                    loader:'file-loader',
                     options: {
-                        hmr: isDevServer,
+                        name: '[name].[hash].css'
                     },
                 },
+                'extract-loader',
                 ...sassPlugins,
             ],
         },

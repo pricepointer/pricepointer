@@ -107,7 +107,6 @@ class CurrentTracks extends PureComponent {
             )
     }
 
-
     pollProductsWithoutPrices = () => {
         const { products } = this.state
         const update = setInterval(() => {
@@ -149,7 +148,6 @@ class CurrentTracks extends PureComponent {
 
         return (
             <div style={{ padding: '10px 0px 0px' }}>
-
                 <div className={classes.title}>
                     <i className="fa fa-search" aria-hidden="true" style={{ color: '#757575' }} />
                     <input
@@ -167,7 +165,5 @@ class CurrentTracks extends PureComponent {
         )
     }
 }
-
-// grab all info for each item that is user id
 
 export default withStyles(styles)(CurrentTracks)

@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
 import { post } from '../../common/api'
 import Header from '../../components/Header'
 import { getElementXPath } from '../helpers'
-import 'font-awesome/scss/font-awesome.scss'
 
 const productsUrl = 'products/'
 const styles = {
@@ -70,7 +69,7 @@ function generateProduct(target, priceThreshold, dayTracker, givenName) {
         })
 }
 
-class Prompt extends Component {
+class Prompt extends PureComponent {
     static propTypes = {
         target: PropTypes.node.isRequired,
         handleClose: PropTypes.func.isRequired,
@@ -116,7 +115,6 @@ class Prompt extends Component {
 
         generateProduct(target, priceThreshold, dayTracker, name)
         chrome.runtime.sendMessage({
-            toggleInfoEntered: true,
             dayTracker,
             priceThreshold,
         })

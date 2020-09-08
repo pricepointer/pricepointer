@@ -7,6 +7,7 @@ from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_K
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.db import transaction
 from django.middleware.csrf import rotate_token
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -164,14 +165,15 @@ def create_user(request, name, email, password):
     if errors:
         raise ValidationError(message=errors)
 
-    user = User(
-        name=name,
-        email=email,
-    )
-    user.set_password(password)
-    user.save()
+    with transaction.atomic():
+        user = User(
+            name=name,
+            email=email,
+        )
+        user.set_password(password)
+        user.save()
 
-    create_confirmation_email(request, user)
+        create_confirmation_email(request, user)
 
     return user
 

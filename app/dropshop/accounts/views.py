@@ -25,12 +25,12 @@ class UsersApiView(APIView):
         data = request.data
 
         form = {
-            'name': data['name'],
-            'email': data['email']
+            'name': data.get('name'),
+            'email': data.get('email')
         }
 
         try:
-            user = create_user(request, **form, password=data['password'])
+            user = create_user(request, **form, password=data.get('password'))
             login(request, user)
         except ValidationError as error:
             errors = {

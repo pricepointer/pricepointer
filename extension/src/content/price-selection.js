@@ -2,6 +2,7 @@ import { createPopper } from '@popperjs/core'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import buildStyles from './buildStyles'
+import ContentFrame from './components/ContentFrame'
 
 // state
 let isToggled = false
@@ -122,41 +123,32 @@ function updateHighlightBoundaries() {
 
 /* need target in order to get html path in prompt */
 function renderPopup(element) {
-    let iframe = document.createElement('iframe')
+    let iframe = null
+    const wrapper = document.createElement('div')
+    document.body.appendChild(wrapper)
 
-    // const wrapper = document.createElement('div')
-    document.body.appendChild(iframe)
-
-    // eslint-disable-next-line no-unused-vars
     function closePopup() {
-        document.body.removeChild(iframe)
+        document.body.removeChild(wrapper)
     }
 
-    function populateIframe(iframe) {
-        const ifrmHtml = iframe.contentDocument.documentElement.querySelector('body')
-
-        const div = document.createElement('div')
-        ifrmHtml.appendChild(div)
-        div.innerHTML = 'hello'
-
-        // ReactDOM.render(
-        //     <Prompt
-        //
-        //         // target={element}
-        //         handleClose={closePopup}
-        //     />,
-        //     div,
-        // )
-
-        return iframe
+    function handleResize(width, height) {
+        if (iframe) {
+            iframe.width = width + 2
+            iframe.height = height + 2 // account for border
+        }
     }
 
-    iframe.setAttribute('id', 'prompt')
-    iframe.setAttribute('src', 'about:blank')
-
-    iframe = populateIframe(iframe)
-    createPopper(element, iframe)
+    ReactDOM.render(
+        <React.StrictMode>
+            <ContentFrame element={element} closePopup={closePopup} handleResize={handleResize} />
+        </React.StrictMode>,
+        wrapper,
+    )
+    iframe = wrapper.getElementsByTagName('iframe')[0]
     iframe.style.zIndex = 10000000000
+    iframe.setAttribute('frameborder', '0')
+
+    createPopper(element, iframe)
 }
 
 function renderError(element) {

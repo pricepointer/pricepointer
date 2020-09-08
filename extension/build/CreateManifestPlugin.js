@@ -129,7 +129,7 @@ module.exports = class CreateManifestPlugin {
             })
 
             const assets = new Set(Object.keys(compilation.assets))
-            const jsonString = JSON.stringify(this.builder(chunks, assets), null, 2)
+            const jsonString = JSON.stringify(this.builder(compiler, compilation, chunks, assets), null, 2)
             compilation.assets['manifest.json'] = {
                 source: () => jsonString,
                 size: () => jsonString.length
