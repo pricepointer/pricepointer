@@ -17,7 +17,7 @@ jobs:
     # Runs a single command using the runners shell
     - name: Setup node
       uses: actions/setup-node@v1.4.3
-      
+
     - name: Cache dependencies
       uses: actions/cache@v2
       with:
@@ -25,10 +25,10 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-      
+
     - name: Install dependencies
       run: npm install
-      
+
     - name: Build app assets
       run: npm run app-build
 
@@ -42,13 +42,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build-assets
+    only:
+      - master
 
     steps:
     - name: Download assets
       uses: actions/download-artifact@v2
       with:
         name: assets
-        
+
     - name: Display structure of downloaded files
       run: ls -R
 
@@ -61,7 +63,7 @@ jobs:
         key: ${{ secrets.KEY }}
         source: "dropshop/static/dist"
         target: "${{ secrets.PROJECT_DIR }}/app"
-        
+
     - name: Copy webpack stats
       uses: appleboy/scp-action@master
       with:
@@ -71,7 +73,7 @@ jobs:
         key: ${{ secrets.KEY }}
         source: "webpack-stats.json"
         target: "${{ secrets.PROJECT_DIR }}/app"
-        
+
     - name: Update and restart app
       uses: appleboy/ssh-action@master
       with:
@@ -87,7 +89,7 @@ jobs:
           ./app/manage.py collectstatic --noinput
           ./app/manage.py migrate --noinput
           sudo systemctl restart gunicorn
-          
+
     - name: Clean up assets cache
       uses: geekyeggo/delete-artifact@v1
       with:
