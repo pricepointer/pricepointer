@@ -1,0 +1,23 @@
+{% extends "accounts/base/signup.html" %}
+{% load render_bundle from webpack_loader %}
+
+{% block css %}
+    {% render_bundle 'reset' 'css' %}
+{% endblock %}
+
+{% block js %}
+    <script>
+        window.Data = {
+            confirmationCode: '{{ confirmation_code }}',
+        }
+    </script>
+    {% render_bundle 'reset' 'js' %}
+{% endblock %}
+
+{% block title %}
+    Reset
+{% endblock %}
+
+{% block content %}
+    <div id="reset-content"></div>
+{% endblock %}

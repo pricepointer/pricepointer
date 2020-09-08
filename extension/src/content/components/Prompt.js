@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
 import { post } from '../../common/api'
 import Header from '../../components/Header'
 import { getElementXPath } from '../helpers'
-import 'font-awesome/scss/font-awesome.scss'
 
 const productsUrl = 'products/'
 const styles = {
@@ -70,7 +69,7 @@ function generateProduct(target, priceThreshold, dayTracker, givenName) {
         })
 }
 
-class Prompt extends Component {
+class Prompt extends PureComponent {
     static propTypes = {
         target: PropTypes.node.isRequired,
         handleClose: PropTypes.func.isRequired,
@@ -80,7 +79,7 @@ class Prompt extends Component {
         super(props)
 
         this.state = {
-            dayTracker: 7,
+            dayTracker: '',
             priceThreshold: '',
             name: '',
             showError: false,
@@ -108,11 +107,14 @@ class Prompt extends Component {
     }
 
     handleClick = () => {
-        const { target, handleClose } = this.props
+        const {
+            target,
+            handleClose,
+        } = this.props
         const { priceThreshold, dayTracker, name } = this.state
+
         generateProduct(target, priceThreshold, dayTracker, name)
         chrome.runtime.sendMessage({
-            toggleInfoEntered: true,
             dayTracker,
             priceThreshold,
         })
@@ -154,6 +156,7 @@ class Prompt extends Component {
                             id="dayTracker"
                             value={dayTracker}
                             onChange={this.handleChange}
+                            placeholder="days"
                         />
                     </div>
                     <div className={classes.inputCard}>

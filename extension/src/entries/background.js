@@ -15,12 +15,3 @@ chrome.runtime.onInstalled.addListener(() => {
         ])
     })
 })
-
-chrome.runtime.onMessage.addListener(
-    ({ toggleInfoEntered }) => {
-        if (toggleInfoEntered) {
-            console.log('content')
-        }
-        return true
-    },
-)

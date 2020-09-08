@@ -122,10 +122,8 @@ export function login(credentials) {
             ])
 
             return getProfile()
-        }, () => {
-            // TODO: Handle refresh error later
-            console.error('Need to handle this error!')
-            return null
+        }, (error) => {
+            throw error.error
         })
 }
 
@@ -174,4 +172,8 @@ export function noTokenPost(url, data, options = {}) {
 export function logout() {
     setAccessToken('')
     setRefreshToken('')
+}
+
+export function changePassword(data) {
+    return noTokenPost('accounts/changepassword/', data)
 }

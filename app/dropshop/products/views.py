@@ -5,11 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from dropshop.products.business import create_price, get_currency, get_price
+from dropshop.products.business import create_price, create_product, get_currency, get_price
 from dropshop.scraper.webscraper import search_for_price
 from .models import Product
 from .serializers import ProductSerializer
-from ..accounts.authentication import create_product
 
 
 class ProductListView(APIView):

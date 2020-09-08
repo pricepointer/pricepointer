@@ -16,6 +16,11 @@ class Product(models.Model):
     target_price = models.DecimalField(max_digits=19, decimal_places=2)
     name = models.CharField(max_length=50)
 
+    def save(self, *args, **kwargs):
+        if self.notification_period is not None:
+            self.expires_at += self.notification_period
+            super().save(*args, **kwargs)
+
 
 class Price(models.Model):
     date = models.DateTimeField(auto_now_add=True)
@@ -24,3 +29,4 @@ class Price(models.Model):
     html = models.TextField()
     currency = models.CharField(max_length=5, default='$')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+

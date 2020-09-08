@@ -191,6 +191,7 @@ function buildWebpackConfig() {
                         modules: false,
                         debug: !isProduction,
                         useBuiltIns: 'usage',
+                        corejs: '3',
                     },
                 ],
                 '@babel/react',

@@ -17,7 +17,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 const getProjectAbsolutePath = (p) => path.join(path.resolve(__dirname), p)
 
-function buildEntries(isDevServer) {
+function buildEntries() {
     const entryDirPath = getProjectAbsolutePath(`./${ENTRY_DIR_PATH}`)
     const entry = {
         content: path.resolve(`${entryDirPath}/../content/content.js`)
@@ -50,12 +50,7 @@ function buildEntries(isDevServer) {
 }
 
 function buildWebpackConfig() {
-    const isDevServer = process.argv.find(v => v.includes('webpack-dev-server'))
-    const environment = {
-        isDevServer,
-    }
-
-    const { entry, plugins: entryPlugins } = buildEntries(isDevServer)
+    const { entry, plugins: entryPlugins } = buildEntries()
     const output = {
         path: getProjectAbsolutePath('./' + OUTPUT_DIR),
         filename: 'js/[name].[hash].js',
@@ -65,9 +60,6 @@ function buildWebpackConfig() {
     const plugins = [
         new CleanWebpackPlugin(),
         ...entryPlugins,
-        new webpack.DefinePlugin({
-            'process.env': environment,
-        }),
         new MiniCssExtractPlugin({
             filename: '[name].[hash].css',
             chunkFilename: '[id].[hash].css',
@@ -120,7 +112,7 @@ function buildWebpackConfig() {
         {
             loader: 'sass-loader',
             options: {
-                sourceMap: !isProduction,
+                sourceMap: true, // sourcemaps are required for resolve-url-loader
             },
         },
     ]
@@ -156,33 +148,26 @@ function buildWebpackConfig() {
             ],
         },
         {
-            test: /\.css$/,
+            test: /\.scss$/,
+            exclude: [/\.iframe\.scss$/],
             use: [
                 'style-loader',
                 {
                     loader: MiniCssExtractPlugin.loader,
-                    options: {
-                        hmr: isDevServer,
-                    },
                 },
-                {
-                    loader: 'css-loader',
-                    options: {
-                        sourceMap: !isProduction,
-                    },
-                },
+                ...sassPlugins,
             ],
         },
         {
-            test: /\.scss$/,
+            test: /\.iframe\.scss$/,
             use: [
-                'style-loader',
                 {
-                    loader: MiniCssExtractPlugin.loader,
+                    loader:'file-loader',
                     options: {
-                        hmr: isDevServer,
+                        name: '[name].[hash].css'
                     },
                 },
+                'extract-loader',
                 ...sassPlugins,
             ],
         },
@@ -217,7 +202,6 @@ function buildWebpackConfig() {
 
     let devServer
     if (isProduction) {
-        environment.NODE_ENV = JSON.stringify('production')
         babelLoader.options.plugins.push('@babel/plugin-transform-runtime')
         babelLoader.options.plugins.push('@babel/plugin-transform-react-constant-elements')
     } else {
@@ -227,13 +211,6 @@ function buildWebpackConfig() {
                 debug: true,
             }),
         )
-
-        if (isDevServer) {
-            devServer = {
-                hot: true,
-                overlay: true,
-            }
-        }
     }
 
     rules.push({

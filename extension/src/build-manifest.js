@@ -15,7 +15,7 @@ const icons = {
     128: 'images/get_started128.png',
 }
 
-module.exports = (chunks, assets) => {
+module.exports = (compiler, compilation, chunks, assets) => {
     const manifest = {
         ...baseManifest,
         icons,
@@ -38,14 +38,22 @@ module.exports = (chunks, assets) => {
     manifest.content_scripts = [
         {
             matches: ['http://*/*', 'https://*/*'],
-            js: [content],
-            css: [contentCss],
+            js: content ? [content] : [],
+            css: contentCss ? [contentCss] : [],
+            all_frames: true,
         },
     ]
 
-    manifest.web_accessible_resources = [
+    let webAccessibleResources = [
         'images/*',
     ]
+
+    const iframeContentCss = Array.from(assets).find(asset => /iframe\..+\.css$/.test(asset))
+    if (iframeContentCss.length) {
+        webAccessibleResources = webAccessibleResources.concat(iframeContentCss)
+    }
+
+    manifest.web_accessible_resources = webAccessibleResources
 
     return manifest
 }

@@ -2,7 +2,7 @@ import { createPopper } from '@popperjs/core'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import buildStyles from './buildStyles'
-import Prompt from './components/Prompt'
+import ContentFrame from './components/ContentFrame'
 
 // state
 let isToggled = false
@@ -121,7 +121,9 @@ function updateHighlightBoundaries() {
     updateOverlay()
 }
 
+/* need target in order to get html path in prompt */
 function renderPopup(element) {
+    let iframe = null
     const wrapper = document.createElement('div')
     document.body.appendChild(wrapper)
 
@@ -129,17 +131,24 @@ function renderPopup(element) {
         document.body.removeChild(wrapper)
     }
 
+    function handleResize(width, height) {
+        if (iframe) {
+            iframe.width = width + 2
+            iframe.height = height + 2 // account for border
+        }
+    }
+
     ReactDOM.render(
         <React.StrictMode>
-            <Prompt
-                target={element}
-                handleClose={closePopup}
-            />
+            <ContentFrame element={element} closePopup={closePopup} handleResize={handleResize} />
         </React.StrictMode>,
         wrapper,
     )
-    createPopper(element, wrapper)
-    wrapper.style.zIndex = 10000000000
+    iframe = wrapper.getElementsByTagName('iframe')[0]
+    iframe.style.zIndex = 10000000000
+    iframe.setAttribute('frameborder', '0')
+
+    createPopper(element, iframe)
 }
 
 function renderError(element) {
