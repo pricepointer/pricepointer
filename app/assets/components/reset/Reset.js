@@ -36,21 +36,24 @@ class Reset extends React.Component {
         this.setState({
             noMatchError: !isPasswordValid,
         })
-        if (isPasswordValid) {
-            changePassword({
-                password,
-                confirmationCode,
-            })
-                .then(() => {
-                    this.setState({
-                        success: true,
-                    })
-                }, () => {
-                    this.setState({
-                        failed: true,
-                    })
-                })
+
+        if (!isPasswordValid) {
+            return
         }
+
+        changePassword({
+            password,
+            confirmationCode,
+        })
+            .then(() => {
+                this.setState({
+                    success: true,
+                })
+            }, () => {
+                this.setState({
+                    failed: true,
+                })
+            })
     }
 
     render() {
