@@ -62,16 +62,14 @@ class Reset extends React.Component {
         } = this.state
         return (
             <div>
-                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control,jsx-a11y/label-has-for */}
-                <label>New password</label>
+                <label htmlFor="password">New password</label>
                 <input
                     type="password"
                     id="password"
                     value={password}
                     onChange={this.handleChange}
                 />
-                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control,jsx-a11y/label-has-for */}
-                <label>Confirm password</label>
+                <label htmlFor="confirmPassword">Confirm password </label>
                 <input
                     type="password"
                     id="confirmPassword"
@@ -79,6 +77,7 @@ class Reset extends React.Component {
                     onChange={this.handleChange}
                     className={noMatchError ? 'error' : null}
                 />
+
                 <div>
                     {!!noMatchError
                     && (
