@@ -177,3 +177,7 @@ export function logout() {
 export function changePassword(data) {
     return noTokenPost('accounts/changepassword/', data)
 }
+
+export function forgotPassword(data) {
+    return noTokenPost('accounts/forgotpassword/', data)
+}

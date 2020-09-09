@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import 'font-awesome/scss/font-awesome.scss'
 import withStyles from 'react-jss'
+import { forgotPassword } from '../../../common/api'
+import CheckPasswordSplash from './CheckPasswordSplash'
 import Fields from './Fields'
 import { authenticationStyles } from './styles'
 
@@ -48,6 +50,7 @@ class Signin extends PureComponent {
         this.state = {
             values: {},
             showForgotPassword: false,
+            showSuccess: false,
         }
     }
 
@@ -58,7 +61,12 @@ class Signin extends PureComponent {
 
     handleChange = (event) => {
         const { value, id: property } = event.target
-        this.setState(prevState => ({ values: { ...prevState.values, [property]: value } }))
+        this.setState(prevState => ({
+            values: {
+                ...prevState.values,
+                [property]: value,
+            },
+        }))
     }
 
     handleLogin = () => {
@@ -74,10 +82,21 @@ class Signin extends PureComponent {
         }))
     }
 
+    handleChangePassword = () => {
+        const { values: { email } } = this.state
+        forgotPassword({ email })
+            .then(() => {
+                this.setState({
+                    showSuccess: true,
+                })
+            })
+    }
+
     render() {
         const {
             values,
             showForgotPassword,
+            showSuccess,
         } = this.state
         const {
             classes,
@@ -90,24 +109,26 @@ class Signin extends PureComponent {
                     <h1 className={classes.title}>Sign In</h1>
                     {
                         showForgotPassword
-                            ? (
-                                <Fields
-                                    fields={forgotPasswordFields}
-                                    values={values}
-                                    buttonLabel="Submit"
-                                    onChange={this.handleChange}
-                                    onSubmit={this.handleShowForgotPassword}
-                                    extraButtons={(
-                                        <a
-                                            onClick={this.handleShowForgotPassword}
-                                            role="button"
-                                            tabIndex={0}
-                                            className={classes.forgotPassword}
-                                        >
-                                            Go back
-                                        </a>
-                                    )}
-                                />
+                            ? (!showSuccess
+                                ? (
+                                    <Fields
+                                        fields={forgotPasswordFields}
+                                        values={values}
+                                        buttonLabel="Submit"
+                                        onChange={this.handleChange}
+                                        onSubmit={this.handleChangePassword}
+                                        extraButtons={(
+                                            <a
+                                                onClick={this.handleShowForgotPassword}
+                                                role="button"
+                                                tabIndex={0}
+                                                className={classes.forgotPassword}
+                                            >
+                                                Go back
+                                            </a>
+                                        )}
+                                    />
+                                ) : <CheckPasswordSplash />
                             )
                             : (
                                 <Fields
