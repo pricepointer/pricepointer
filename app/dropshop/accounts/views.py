@@ -63,7 +63,7 @@ class SignupView(View):
 
     def get(self, request):
         if request.user and request.user.is_authenticated:
-            return redirect(reverse('index'))
+            return redirect(reverse('profile'))
 
         return render(request, self.template)
 
@@ -89,8 +89,16 @@ class SignupView(View):
             errors = {'general': 'There was an error with the server. Try again later.'}
             return render(request, self.template, {'errors': errors, 'form': form})
 
-        destination = query.get('next', reverse('index'))
+        destination = query.get('next', reverse('profile'))
         return redirect(destination)
+
+
+@require_authentication
+class ProfileView(View):
+    template = 'accounts/profile.html'
+
+    def get(self, request):
+        return render(request, self.template)
 
 
 class LoginView(View):
@@ -98,7 +106,7 @@ class LoginView(View):
 
     def get(self, request):
         if request.user and request.user.is_authenticated:
-            return redirect(reverse('index'))
+            return redirect(reverse('profile'))
 
         return render(request, self.template)
 
@@ -116,7 +124,7 @@ class LoginView(View):
             errors = {'general': 'There was an error with the server. Try again later.'}
             return render(request, self.template, {'errors': errors, 'form': form})
 
-        destination = query.get('next', reverse('index'))
+        destination = query.get('next', reverse('profile'))
         return redirect(destination)
 
 

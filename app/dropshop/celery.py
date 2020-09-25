@@ -24,6 +24,10 @@ app.conf.beat_schedule = {
     # runs everu hour
     'price-update-and-emails': {
         'task': 'dropshop.tasks.price_and_email_check',
+        'schedule': crontab(hour='*'),
+    },
+    'clear-expired-emails': {
+        'task': 'dropshop.tasks.clear_expired_emails',
         'schedule': crontab(minute='*'),
     },
 }

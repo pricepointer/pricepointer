@@ -9,10 +9,10 @@ const baseManifest = {
 }
 
 const icons = {
-    16: 'images/get_started16.png',
-    32: 'images/get_started32.png',
-    48: 'images/get_started48.png',
-    128: 'images/get_started128.png',
+    16: 'images/favicon-16x16.png',
+    32: 'images/favicon-32x32.png',
+    48: 'images/favicon-48x48.png',
+    128: 'images/favicon-128x128.png',
 }
 
 module.exports = (compiler, compilation, chunks, assets) => {
@@ -33,8 +33,10 @@ module.exports = (compiler, compilation, chunks, assets) => {
 
     manifest.options_page = 'options.html'
 
-    const content = Array.from(assets).find(asset => /content\..+\.js$/.test(asset))
-    const contentCss = Array.from(assets).find(asset => /content\..+\.css$/.test(asset))
+    const content = Array.from(assets)
+        .find(asset => /content\..+\.js$/.test(asset))
+    const contentCss = Array.from(assets)
+        .find(asset => /content\..+\.css$/.test(asset))
     manifest.content_scripts = [
         {
             matches: ['http://*/*', 'https://*/*'],
@@ -46,9 +48,11 @@ module.exports = (compiler, compilation, chunks, assets) => {
 
     let webAccessibleResources = [
         'images/*',
+        'fonts/*',
     ]
 
-    const iframeContentCss = Array.from(assets).find(asset => /iframe\..+\.css$/.test(asset))
+    const iframeContentCss = Array.from(assets)
+        .find(asset => /iframe\..+\.css$/.test(asset))
     if (iframeContentCss.length) {
         webAccessibleResources = webAccessibleResources.concat(iframeContentCss)
     }

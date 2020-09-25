@@ -1,0 +1,41 @@
+{% extends "_partial/main.html" %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+{% load constants %}
+
+{% block css %}
+    {% render_bundle 'profile' 'css' %}
+{% endblock %}
+
+{% block js %}
+    {% render_bundle 'profile' 'js' %}
+{% endblock %}
+
+{% block title %}
+    Welcome to Pricepointer
+{% endblock %}
+
+{% block content %}
+    <div id="content">
+        <div class="header">
+            <div class="header__left">
+                <a class="logo">{% config 'site_name' %}</a>
+            </div>
+            <div class="nav">
+                <a href="{% url 'signout' %}" title="Sign in">Sign out</a>
+            </div>
+        </div>
+        <div class="hero">
+            <div class="hero-bg"></div>
+            <img class="hero-image" src="{% static "images/hero.svg" %}" alt="">
+            <div class="hero-content">
+                <div id="profile"/>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {% include '_partial/footer/footer.html' %}
+{% endblock %}

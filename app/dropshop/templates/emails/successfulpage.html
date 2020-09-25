@@ -1,7 +1,9 @@
+{% load static %}
+
 <div style="display:flex; align-items:center; justify-content:center; background-color:#f8f9fa">
     <div style="width: 500px; height: 550px; margin: 50px; background-color: #ffffff;">
         <div style="text-align: center; background-color: #b8d3ff; padding: 20px 0px">
-            <img src="https://i.imgur.com/iJvZ1cj.png" width="200" height="auto" alt="pricepointer">
+            <img src="{% static "images/pricepointer-logo.png" %}" width="200" height="auto" alt="pricepointer">
         </div>
 
         <div style="display:flex; align-items:center; justify-content:center;">
@@ -10,7 +12,7 @@
                     successfully
                     created!
                 </div>
-                <img src="https://i.imgur.com/mjVuUK7.png" width="400" height="auto" alt="Success" style="padding: 10px;">
+                <img src="{% static "images/success-jumping.png" %}" width="400" height="auto" alt="Success" style="padding: 10px;">
                 <div style="color: #8a8a8a;  width: 250px; margin: 0 auto">You may close this window and sign in to
                     begin tracking your
                     products!

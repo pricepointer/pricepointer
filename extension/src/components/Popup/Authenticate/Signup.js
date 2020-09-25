@@ -45,15 +45,20 @@ class Signup extends PureComponent {
             values: {},
             errors: {},
             showCheckEmail: false,
+            isLoading: false,
         }
     }
 
     handleSignup = () => {
         const { values } = this.state
+        this.setState({
+            isLoading: true,
+        })
         signup(values)
             .then(() => {
                 this.setState({
                     showCheckEmail: true,
+                    isLoading: false,
                 })
             })
             .catch((errors) => {
@@ -64,13 +69,19 @@ class Signup extends PureComponent {
                         password: errors.error.password,
                     },
                     showCheckEmail: false,
+                    isLoading: false,
                 })
             })
     }
 
     handleChange = (event) => {
         const { value, id: property } = event.target
-        this.setState(prevState => ({ values: { ...prevState.values, [property]: value } }))
+        this.setState(prevState => ({
+            values: {
+                ...prevState.values,
+                [property]: value,
+            },
+        }))
     }
 
     isValid = () => {
@@ -98,6 +109,7 @@ class Signup extends PureComponent {
             values,
             errors,
             showCheckEmail,
+            isLoading,
         } = this.state
         const {
             classes,
@@ -116,6 +128,7 @@ class Signup extends PureComponent {
                                     values={values}
                                     errors={errors}
                                     buttonLabel="Sign up"
+                                    isLoading={isLoading}
                                     onChange={this.handleChange}
                                     onSubmit={this.handleSubmit}
                                 />

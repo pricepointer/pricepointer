@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import 'font-awesome/scss/font-awesome.scss'
 import withStyles from 'react-jss'
+import { forgotPassword } from '../../../common/api'
+import CheckPasswordSplash from './CheckPasswordSplash'
 import Fields from './Fields'
 import { authenticationStyles } from './styles'
 
@@ -46,8 +48,11 @@ class Signin extends PureComponent {
         super(props)
 
         this.state = {
-            values: {},
+            values: { email: '' },
+            errors: {},
             showForgotPassword: false,
+            showSuccess: false,
+            isLoading: false,
         }
     }
 
@@ -58,14 +63,30 @@ class Signin extends PureComponent {
 
     handleChange = (event) => {
         const { value, id: property } = event.target
-        this.setState(prevState => ({ values: { ...prevState.values, [property]: value } }))
+        this.setState(prevState => ({
+            values: {
+                ...prevState.values,
+                [property]: value,
+            },
+        }))
     }
 
     handleLogin = () => {
         const { handleLogin } = this.props
         const { values: { email, password } } = this.state
-
+        this.setState({
+            isLoading: true,
+        })
         handleLogin(email, password)
+            .then(() => {
+                this.setState({
+                    isLoading: false,
+                })
+            }, () => {
+                this.setState({
+                    isLoading: false,
+                })
+            })
     }
 
     handleShowForgotPassword = () => {
@@ -74,10 +95,34 @@ class Signin extends PureComponent {
         }))
     }
 
+    validateEmail = (email) => {
+        const re = /\S+@\S+\.\S+/
+        return re.test(email)
+    }
+
+    handleChangePassword = () => {
+        const { values: { email } } = this.state
+        const errors = {}
+        if (this.validateEmail(email)) {
+            this.setState({
+                showSuccess: true,
+            })
+        } else {
+            errors.email = 'Please enter a valid email'
+            this.setState({
+                errors,
+            })
+        }
+        forgotPassword({ email })
+    }
+
     render() {
         const {
             values,
             showForgotPassword,
+            showSuccess,
+            isLoading,
+            errors,
         } = this.state
         const {
             classes,
@@ -90,24 +135,28 @@ class Signin extends PureComponent {
                     <h1 className={classes.title}>Sign In</h1>
                     {
                         showForgotPassword
-                            ? (
-                                <Fields
-                                    fields={forgotPasswordFields}
-                                    values={values}
-                                    buttonLabel="Submit"
-                                    onChange={this.handleChange}
-                                    onSubmit={this.handleShowForgotPassword}
-                                    extraButtons={(
-                                        <a
-                                            onClick={this.handleShowForgotPassword}
-                                            role="button"
-                                            tabIndex={0}
-                                            className={classes.forgotPassword}
-                                        >
-                                            Go back
-                                        </a>
-                                    )}
-                                />
+                            ? (!showSuccess
+                                ? (
+                                    <Fields
+                                        fields={forgotPasswordFields}
+                                        values={values}
+                                        errors={errors}
+                                        buttonLabel="Submit"
+                                        onChange={this.handleChange}
+                                        onSubmit={this.handleChangePassword}
+                                        isLoading={isLoading}
+                                        extraButtons={(
+                                            <a
+                                                onClick={this.handleShowForgotPassword}
+                                                role="button"
+                                                tabIndex={0}
+                                                className={classes.forgotPassword}
+                                            >
+                                                Go back
+                                            </a>
+                                        )}
+                                    />
+                                ) : <CheckPasswordSplash />
                             )
                             : (
                                 <Fields
@@ -117,6 +166,7 @@ class Signin extends PureComponent {
                                     buttonLabel="Sign in"
                                     onChange={this.handleChange}
                                     onSubmit={this.handleLogin}
+                                    isLoading={isLoading}
                                     extraButtons={(
                                         <a
                                             className={classes.forgotPassword}

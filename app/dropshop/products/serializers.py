@@ -32,15 +32,21 @@ class ProductSerializer(ModelSerializer):
                 'currency': None,
                 'percent': None,
                 'price_difference': None,
-                'error': None,
+                'error': True,
             }
 
         latest_price = self._get_latest_price(instance)
 
+        # error handling in case latest price was an error
+        if not latest_price.price:
+            last_price = 0
+        else:
+            last_price = latest_price.price
+
         # get percent
         percent = str(
             (
-                (1 - (Decimal(latest_price.price) / Decimal(first_price.price))) * 100
+                (1 - (Decimal(last_price) / Decimal(first_price.price))) * 100
             ).quantize(Decimal('.01'), rounding=ROUND_HALF_UP)
         )
 
@@ -60,7 +66,10 @@ class ProductSerializer(ModelSerializer):
 
     def _get_first_price(self, product):
         queryset = self._get_price_queryset(product)
-        return queryset.first()
+        for price in queryset.iterator():
+            if not price.error:
+                return price
+        return None
 
     def _get_latest_price(self, product):
         queryset = self._get_price_queryset(product)
