@@ -179,5 +179,5 @@ export function changePassword(data) {
 }
 
 export function forgotPassword(data) {
-    return noTokenPost('accounts/forgotpassword/', data)
+    noTokenPost('accounts/forgotpassword/', data)
 }

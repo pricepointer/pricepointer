@@ -58,6 +58,10 @@ const styles = {
         display: 'inline',
         paddingRight: 4,
     },
+
+    error: {
+        color: '#e2302f',
+    },
 }
 
 class ProductRow extends React.Component {
@@ -68,9 +72,10 @@ class ProductRow extends React.Component {
             error: PropTypes.bool,
             currency: PropTypes.string,
             website: PropTypes.string.isRequired,
-            price_difference: PropTypes.number,
+            price_difference: PropTypes.string,
             percent: PropTypes.string,
         }).isRequired,
+        handleDelete: PropTypes.func.isRequired,
     }
 
     constructor(props) {
@@ -114,9 +119,9 @@ class ProductRow extends React.Component {
                     {product.price
                         ? `${product.currency}${product.price}`
                         : (
-                            product.error ? <span>Error</span>
+                            (product.error ? <span className={classes.error}>Error</span>
                                 : <span>Loading</span>
-                        )}
+                            ))}
                 </div>
                 {
                     product.price != null
@@ -186,7 +191,7 @@ class ProductRow extends React.Component {
     }
 
     render() {
-        const { classes, product } = this.props
+        const { classes, product, handleDelete } = this.props
         const { showDelete } = this.state
 
         return (
@@ -214,6 +219,7 @@ class ProductRow extends React.Component {
                         style={{
                             padding: '0px 0px 25px',
                             paddingLeft: '10px',
+                            cursor: 'pointer',
                         }}
                     />
                 </div>
@@ -228,7 +234,7 @@ class ProductRow extends React.Component {
                             cursor: 'pointer',
                         }}
                         onClick={() => {
-                            this.handleDelete(product)
+                            handleDelete(product)
                         }}
                     />
                 </div>

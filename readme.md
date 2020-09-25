@@ -19,11 +19,12 @@ A browser extension and app that will help you track product pricing and notify 
         pip install -r requirements.txt
         npm install
         brew install redis
-
+        
 2.  Start celery processes
         
         brew services start redis
         cd app/ && celery worker -A dropshop --loglevel=info
+        sudo docker run -p 8050:8050 scrapinghub/splash
         
     open a new terminal and run
     

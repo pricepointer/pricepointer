@@ -137,6 +137,7 @@ class CurrentTracks extends PureComponent {
                 <ProductRow
                     key={product.id}
                     product={product}
+                    handleDelete={this.handleDelete}
                 />
             ))
         )

@@ -49,7 +49,7 @@ class User(PasswordMixin):
         _('active'),
         default=False,
     )
-
+    unique_code = models.TextField()
     is_authenticated = True
     is_anonymous = False
 

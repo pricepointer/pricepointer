@@ -6,6 +6,7 @@ const common = {
     },
 
     button: {
+        transition: 'background-color 1s ease, border 1s ease',
         outline: 'none',
         backgroundColor: '#00C6E8',
         color: '#FFFFFF',
@@ -17,6 +18,7 @@ const common = {
         fontSize: '10px',
         fontWeight: '900',
         textTransform: 'uppercase',
+        cursor: 'pointer',
     },
 }
 

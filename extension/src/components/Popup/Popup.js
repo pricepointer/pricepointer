@@ -17,6 +17,7 @@ const styles = {
         borderRadius: 5,
         border: 'none',
         fontSize: '18px',
+        cursor: 'pointer',
     },
     container: {
         width: max,
@@ -71,11 +72,10 @@ class Popup extends PureComponent {
         })
     }
 
-    handleLogin = (email, password) => {
-        login({
-            email,
-            password,
-        })
+    handleLogin = (email, password) => login({
+        email,
+        password,
+    })
             .then((user) => {
                 this.setState({
                     user,
@@ -85,7 +85,6 @@ class Popup extends PureComponent {
                     loginError: 'Username or password is incorrect',
                 })
             })
-    }
 
     handleClearLoginError = () => {
         this.setState({

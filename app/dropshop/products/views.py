@@ -1,14 +1,13 @@
 from django.core.exceptions import ValidationError
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from dropshop.products.business import create_price, create_product, get_currency, get_price
-from dropshop.scraper.webscraper import search_for_price
+from dropshop.products.business import create_product
 from .models import Product
 from .serializers import ProductSerializer
+from ..tasks import price_search
 
 
 class ProductListView(APIView):
@@ -23,15 +22,12 @@ class ProductListView(APIView):
             'website': data['website'],
             'price_path': data['price_path'],
             'target_price': data['target_price'],
-            'name': data['name']
+            'name': data['name'],
+            'notification_period': data['notification_period']
         }
         try:
             product = create_product(**form)
-            product.save()
-            cost = search_for_price(data['website'], data['price_path'])
-            price = get_price(cost)
-            currency = get_currency(cost)
-            create_price(price, data['website'], product, currency)
+            price_search.delay(product.id)
 
         except ValidationError as error:
             errors = {
@@ -41,7 +37,7 @@ class ProductListView(APIView):
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         except:
             errors = {'general': 'There was an error with the server. Try again later.'}
-            return render(request, self.template, {'errors': errors, 'form': form})
+            return Response(errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(ProductSerializer(product).data, status=status.HTTP_201_CREATED)
 

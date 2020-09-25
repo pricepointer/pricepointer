@@ -38,6 +38,7 @@ const styles = {
         borderRadius: 5,
         border: 'none',
         fontSize: '18px',
+        cursor: 'pointer',
     },
 
     buttonDiv: {
@@ -51,7 +52,6 @@ function generateProduct(target, priceThreshold, dayTracker, givenName) {
     const xpath = getElementXPath(target)
     const web = document.URL
     const data = {
-        user: 1,
         website: web,
         price_path: xpath,
         target_price: priceThreshold,

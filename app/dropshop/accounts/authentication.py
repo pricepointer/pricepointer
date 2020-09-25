@@ -38,7 +38,7 @@ def create_confirmation_email(request, user):
     send_confirmation_mail(request, confirmation_email)
 
 
-def authenticate(request, email, password, **kwargs):
+def authenticate(request, email, password):
     backend = ModelBackend()
     user = backend.authenticate(request, email=email, password=password)
     if not user:
@@ -166,9 +166,15 @@ def create_user(request, name, email, password):
         raise ValidationError(message=errors)
 
     with transaction.atomic():
+        letters = string.ascii_letters
+        while True:
+            unique_code = ''.join(random.choice(letters) for i in range(CONFIRMATION_CODE_LENGTH))
+            if not User.objects.filter(unique_code=unique_code).exists():
+                break
         user = User(
             name=name,
             email=email,
+            unique_code=unique_code
         )
         user.set_password(password)
         user.save()

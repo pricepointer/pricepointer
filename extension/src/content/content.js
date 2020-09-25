@@ -1,4 +1,6 @@
+import { appIdentifier } from '../../constants'
 import { enterPriceSelection } from './price-selection'
+
 
 chrome.runtime.onMessage.addListener(
     ({ toggleSelectPrice }) => {
@@ -8,3 +10,7 @@ chrome.runtime.onMessage.addListener(
         return true
     },
 )
+
+const wrapper = document.createElement('div')
+wrapper.setAttribute('id', appIdentifier)
+document.body.appendChild(wrapper)
