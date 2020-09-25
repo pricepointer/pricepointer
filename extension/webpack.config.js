@@ -20,7 +20,7 @@ const getProjectAbsolutePath = (p) => path.join(path.resolve(__dirname), p)
 function buildEntries() {
     const entryDirPath = getProjectAbsolutePath(`./${ENTRY_DIR_PATH}`)
     const entry = {
-        content: path.resolve(`${entryDirPath}/../content/content.js`)
+        content: path.resolve(`${entryDirPath}/../content/content.js`),
     }
 
     const plugins = []
@@ -57,7 +57,12 @@ function buildWebpackConfig() {
         chunkFilename: 'js/[id].[contenthash].js',
     }
 
+    const environment = { API_URL: JSON.stringify(isProduction ? 'https://pricepointer.co' : 'http://127.0.0.1:8000') }
+
     const plugins = [
+        new webpack.DefinePlugin({
+            'process.env': environment,
+        }),
         new CleanWebpackPlugin(),
         ...entryPlugins,
         new MiniCssExtractPlugin({
@@ -66,8 +71,11 @@ function buildWebpackConfig() {
         }),
         new CopyWebpackPlugin({
             patterns: [
-                { from: getProjectAbsolutePath('images'), to: 'images' },
-            ]
+                {
+                    from: getProjectAbsolutePath('images'),
+                    to: 'images',
+                },
+            ],
         }),
         new CreateManifestPlugin(buildManifest),
         new WriteFilePlugin(),
@@ -162,9 +170,9 @@ function buildWebpackConfig() {
             test: /\.iframe\.scss$/,
             use: [
                 {
-                    loader:'file-loader',
+                    loader: 'file-loader',
                     options: {
-                        name: '[name].[hash].css'
+                        name: '[name].[hash].css',
                     },
                 },
                 'extract-loader',

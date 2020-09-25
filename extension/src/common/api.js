@@ -1,5 +1,7 @@
 const API_VERSION = 1
-const baseUrl = `http://127.0.0.1:8000/api/v${API_VERSION}/`
+const baseUrl = `${process.env.API_URL}/api/v${API_VERSION}/`
+
+/* https://pricepointer.co/api/v${API_VERSION}/ */
 
 const TOKEN_ACCESS_KEY = 'access'
 const TOKEN_REFRESH_KEY = 'refresh'
