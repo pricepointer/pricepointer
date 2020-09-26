@@ -17,13 +17,11 @@ PyJWT==1.7.1
 pytz==2020.1
 redis==3.5.3
 requests==2.24.0
-selenium==3.141.0
 six==1.15.0
 sqlparse==0.3.1
 urllib3==1.25.9
 webencodings==0.5.1
 zipp==3.1.0
-Scrapy~=2.3.0
-http-request-randomizer==1.2.3
-itemadapter~=0.1.0
-webdriver_manager==3.2.2
+asyncio==3.4.3
+pyppeteer==0.2.2
+shadow-useragent==0.0.17
