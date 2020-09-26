@@ -180,20 +180,7 @@ CELERY_TASK_ALWAYS_EAGER = False
 # cors
 CORS_ALLOW_ALL_ORIGINS = True
 
-
-# webscraper proxy
-PROXY_POOL_ENABLED = True
-
-DOWNLOADER_MIDDLEWARES = {
-    'scrapy_proxy_pool.middlewares.ProxyPoolMiddleware': 610,
-    'scrapy_proxy_pool.middlewares.BanDetectionMiddleware': 620,
-    # 'scrapy_splash.SplashCookiesMiddleware': 723,
-    # 'scrapy_splash.SplashMiddleware': 725,
-    # 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
-}
-
-
-#Splash constants
-# SPLASH_URL = 'http://localhost:8050'
-# DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
-# HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
+# proxy
+SCRAPER_PROXY_URL = ''
+SCRAPER_PROXY_USERNAME = ''
+SCRAPER_PROXY_PASSWORD = ''

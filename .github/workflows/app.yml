@@ -88,6 +88,8 @@ jobs:
           ./app/manage.py collectstatic --noinput
           ./app/manage.py migrate --noinput
           sudo systemctl restart gunicorn
+          sudo systemctl restart celery-worker.service
+          sudo systemctl restart celery-beat.service
 
     - name: Clean up assets cache
       uses: geekyeggo/delete-artifact@v1
