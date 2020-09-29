@@ -20,9 +20,8 @@ async def scraper(url, xpath):
         await page.setUserAgent(ua.random_nomobile)
         await page.setExtraHTTPHeaders({
             'Proxy-Authorization': (
-                    'Basic ' + base64.b64encode(
-                '{}:{}'.format(settings.SCRAPER_PROXY_USERNAME, settings.SCRAPER_PROXY_PASSWORD).encode()
-            ).decode()
+                'Basic ' + base64.b64encode(
+                '{}:{}'.format(settings.SCRAPER_PROXY_USERNAME, settings.SCRAPER_PROXY_PASSWORD).encode()).decode()
             ),
         })
         await page.goto(url, {
