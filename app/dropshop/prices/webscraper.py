@@ -15,6 +15,13 @@ async def scraper(url, xpath):
         browser = await launch(
             headless=True,
             http_proxy=settings.SCRAPER_PROXY_URL,
+            args=[
+                '--no-sandbox',
+                '--single-process',
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+                '--no-zygote'
+            ]
         )
         page = await browser.newPage()
         await page.setUserAgent(ua.random_nomobile)
