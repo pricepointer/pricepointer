@@ -57,7 +57,7 @@ function buildWebpackConfig() {
         chunkFilename: 'js/[id].[contenthash].js',
     }
 
-    const environment = { API_URL: JSON.stringify(isProduction ? 'https://pricepointer.co' : 'http://127.0.0.1:8000') }
+    const environment = { API_URL: JSON.stringify(isProduction ? 'http://127.0.0.1:8000' : 'http://127.0.0.1:8000') }
 
     const plugins = [
         new webpack.DefinePlugin({

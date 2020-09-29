@@ -9,6 +9,5 @@ app/settings/*
 app/static
 app/dropshop/static/dist
 
-*/_dist
-sendgrid.env
+extension/_dist
 sendgrid.env

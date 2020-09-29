@@ -76,15 +76,16 @@ class Popup extends PureComponent {
         email,
         password,
     })
-            .then((user) => {
-                this.setState({
-                    user,
-                })
-            }, () => {
-                this.setState({
-                    loginError: 'Username or password is incorrect',
-                })
+        .then((user) => {
+            this.setState({
+                user,
             })
+        }, () => {
+            this.setState({
+                loginError: 'Username or password is incorrect',
+            })
+        })
+
 
     handleClearLoginError = () => {
         this.setState({
