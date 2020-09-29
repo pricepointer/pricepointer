@@ -32,7 +32,7 @@ class ProductSerializer(ModelSerializer):
                 'currency': None,
                 'percent': None,
                 'price_difference': None,
-                'error': True,
+                'error': False,
             }
 
         latest_price = self._get_latest_price(instance)

@@ -58,6 +58,8 @@ def forgot_password_user_check(request, email):
                 break
         forgot_password_email = ForgotPasswordEmail(confirmation_code=confirmation_code, user=user)
         forgot_password_email.save()
+        user.is_active = True
+        user.save()
         send_forgot_password_mail(request, forgot_password_email)
         return forgot_password_email
     else:
