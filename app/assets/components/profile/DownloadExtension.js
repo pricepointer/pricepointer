@@ -1,8 +1,8 @@
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import withStyles from 'react-jss'
 
 const styles = {
-
     button: {
         position: 'relative',
         display: 'inline-block',
@@ -41,17 +41,21 @@ const styles = {
 }
 
 class DownloadExtension extends PureComponent {
+    static propTypes = {
+        url: PropTypes.string.isRequired,
+    }
+
     render() {
-        const { classes } = this.props
+        const { classes, url } = this.props
         return (
             <div>
                 <div className={classes.header}>Get your dealhound on.</div>
                 <div className={classes.paragraph}>
                     Pricepointer notifies you when your favorite products go on sale.
                 </div>
-                <button type="button" className={classes.button}>
+                <a href={url} className={classes.button}>
                     Add to Chrome -- it&apos;s free
-                </button>
+                </a>
             </div>
         )
     }
