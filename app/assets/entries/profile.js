@@ -7,11 +7,12 @@ import Usage from '../components/profile/Usage'
 
 window.addEventListener('load', () => {
     const extensionDownloaded = document.getElementById(appIdentifier)
+    const profile = document.getElementById('profile')
 
     ReactDOM.render(
         <React.StrictMode>
-            {extensionDownloaded ? <Usage /> : <DownloadExtension />}
+            {extensionDownloaded ? <Usage /> : <DownloadExtension url={profile.dataset.chromeLink} />}
         </React.StrictMode>,
-        document.getElementById('profile'),
+        profile,
     )
 })

@@ -35,10 +35,10 @@
                 <p>
                     Pricepointer notifies you when your favorite products go on sale.
                 </p>
-                <button class="button">Add to Chrome -- it's free</button>
+                <a href="{% config 'chrome_link' %}" class="button">Add to Chrome -- it's free</a>
             </div>
         </div>
-        <section class="section how">xp
+        <section class="section how">
             <div class="section__left">
                 <div class="demo-bg"></div>
                 <img class="demo-image" src="{% static "images/demo.png" %}" alt="">
@@ -67,7 +67,7 @@
         <section class="section cta">
             <div>
                 <h2>Start saving today!</h2>
-                <button class="button">Add to Chrome -- it's free</button>
+                <a href="{% config 'chrome_link' %}" class="button">Add to Chrome -- it's free</a>
             </div>
         </section>
     </div>
