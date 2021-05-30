@@ -85,7 +85,7 @@
     "webpack-dev-server": "^3.11.0",
     "webpack-sources": "^1.4.3",
     "write-file-webpack-plugin": "^4.5.1",
-    "ws": "^7.3.1"
+    "ws": "^7.4.6"
   },
   "dependencies": {
     "@jest/globals": "^26.4.0",
