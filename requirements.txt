@@ -13,7 +13,7 @@ djangorestframework-simplejwt==4.4.0
 idna==2.10
 Markdown==3.2.2
 psycopg2-binary==2.8.5
-PyJWT==1.7.1
+PyJWT==2.4.0
 pytz==2020.1
 redis==3.5.3
 requests==2.24.0
